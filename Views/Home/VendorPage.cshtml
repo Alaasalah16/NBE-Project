@@ -1,0 +1,200 @@
+﻿@* @{
+    ViewData["Title"] = "Vendor Page";
+}
+
+<section class="do_section layout_padding">
+    <div class="container">
+        <div class="heading_container">
+
+            <h2 style="margin-bottom: 20px;">Explore Our Key Areas</h2>
+
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="row">
+                        <!-- Profile Button -->
+                        <div class="col-md-4 mb-3">
+                            <a class="btn btn-custom-profile btn-lg btn-block shadow-custom" href="@Url.Action("Create", "Profile")">
+                                <i class="mdi mdi-account menu-icon"></i> Profile
+                            </a>
+                        </div>
+
+                        <!-- Security Assurance Button -->
+                        <div class="col-md-4 mb-3">
+                            <a class="btn btn-custom-security btn-lg btn-block shadow-custom" href="@Url.Action("Create", "SecurityAssurance")">
+                                <i class="mdi mdi-shield-security menu-icon"></i> Security Assurance
+                            </a>
+                        </div>
+
+                        <!-- Compliance Check Button -->
+                        <div class="col-md-4 mb-3">
+                            <a class="btn btn-custom-compliance btn-lg btn-block shadow-custom" href="@Url.Action("Index", "ComplianceCheck")">
+                                <i class="mdi mdi-check-circle menu-icon"></i> Compliance Check
+                            </a>
+                        </div>
+
+                        <!-- Incident/Events Reporting Button -->
+                        <div class="col-md-4 mb-3">
+                            <a class="btn btn-custom-incident btn-lg btn-block shadow-custom" href="@Url.Action("Create", "Incident")">
+                                <i class="mdi mdi-alert-circle menu-icon"></i> Incident/Events Reporting
+                            </a>
+                        </div>
+
+                        <!-- NDA Button -->
+                        <div class="col-md-4 mb-3">
+                            <a class="btn btn-custom-nda btn-lg btn-block shadow-custom" href="@Url.Action("Upload", "NDA")">
+                                <i class="mdi mdi-file-document-outline menu-icon"></i> NDA
+                            </a>
+                        </div>
+
+                        <!-- Change Requests Button -->
+                        <div class="col-md-4 mb-3">
+                            <a class="btn btn-custom-change btn-lg btn-block shadow-custom" href="@Url.Action("Create", "ChangeRequests")">
+                                <i class="mdi mdi-update menu-icon"></i> Change Requests
+                            </a>
+                        </div>
+
+                        <!-- Onsite NBE Audit Mission Button -->
+                        <div class="col-md-4 mb-3">
+                            <a class="btn btn-custom-onsite btn-lg btn-block shadow-custom" href="@Url.Action("Create", "Audit")">
+                                <i class="mdi mdi-clipboard-check menu-icon"></i> Onsite NBE Audit Mission
+                            </a>
+                        </div>
+
+                        <!-- Awareness Button -->
+                        <div class="col-md-4 mb-3">
+                            <a class="btn btn-custom-awareness btn-lg btn-block shadow-custom" href="@Url.Action("Index", "Awareness")">
+                                <i class="mdi mdi-bullhorn menu-icon"></i> Awareness
+                            </a>
+                        </div>
+
+                        <!-- Regulation Compliance Button -->
+                        <div class="col-md-4 mb-3">
+                            <a class="btn btn-custom-regulation btn-lg btn-block shadow-custom" href="@Url.Action("Details", "RegulationCompliance")">
+                                <i class="mdi mdi-regex menu-icon"></i> Regulation Compliance
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+        <style>
+            /* Define custom button colors and shapes */
+            .btn-custom-profile {
+                background: linear-gradient(135deg, #4caf50, #2e7d32); /* Green gradient */
+                color: #fff;
+                border-radius: 0.75rem; /* More rounded corners */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+                border: none; /* No border */
+            }
+
+                .btn-custom-profile:hover {
+                    background: linear-gradient(135deg, #2e7d32, #4caf50); /* Inverse gradient on hover */
+                }
+
+            .btn-custom-security {
+                background: linear-gradient(135deg, #ff5722, #d84315); /* Orange gradient */
+                color: #fff;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                border: none;
+            }
+
+                .btn-custom-security:hover {
+                    background: linear-gradient(135deg, #d84315, #ff5722);
+                }
+
+            .btn-custom-compliance {
+                background: linear-gradient(135deg, #2196f3, #1976d2); /* Blue gradient */
+                color: #fff;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                border: none;
+            }
+
+                .btn-custom-compliance:hover {
+                    background: linear-gradient(135deg, #1976d2, #2196f3);
+                }
+
+            .btn-custom-incident {
+                background: linear-gradient(135deg, #f44336, #d32f2f); /* Red gradient */
+                color: #fff;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                border: none;
+            }
+
+                .btn-custom-incident:hover {
+                    background: linear-gradient(135deg, #d32f2f, #f44336);
+                }
+
+            .btn-custom-nda {
+                background: linear-gradient(135deg, #009688, #00796b); /* Teal gradient */
+                color: #fff;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                border: none;
+            }
+
+                .btn-custom-nda:hover {
+                    background: linear-gradient(135deg, #00796b, #009688);
+                }
+
+            .btn-custom-change {
+                background: linear-gradient(135deg, #9c27b0, #6a1b9a); /* Purple gradient */
+                color: #fff;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                border: none;
+            }
+
+                .btn-custom-change:hover {
+                    background: linear-gradient(135deg, #6a1b9a, #9c27b0); /* Inverse purple gradient on hover */
+                }
+
+
+            .btn-custom-onsite {
+                background: linear-gradient(135deg, #ff9800, #f57c00); /* Orange gradient */
+                color: #fff;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                border: none;
+            }
+
+                .btn-custom-onsite:hover {
+                    background: linear-gradient(135deg, #f57c00, #ff9800);
+                }
+
+            .btn-custom-awareness {
+                background: linear-gradient(135deg, #673ab7, #512da8); /* Purple gradient */
+                color: #fff;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                border: none;
+            }
+
+                .btn-custom-awareness:hover {
+                    background: linear-gradient(135deg, #512da8, #673ab7);
+                }
+
+            .btn-custom-regulation {
+                background: linear-gradient(135deg, #757575, #424242); /* Dark gray gradient */
+                color: #fff;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                border: none;
+            }
+
+                .btn-custom-regulation:hover {
+                    background: linear-gradient(135deg, #424242, #757575);
+                }
+
+            .menu-icon {
+                font-size: 1.5rem; /* Icon size */
+                margin-right: 0.5rem; /* Space between icon and text */
+            }
+
+        </style>
+
+ *@

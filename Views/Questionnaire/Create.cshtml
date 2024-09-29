@@ -1,0 +1,103 @@
+﻿@model NBE_Project.ViewModels.QuestionnaireDTO
+
+@{
+    ViewData["Title"] = "Questionnaire";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">Security Questionnaire</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post" id="questionnaire-form">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div id="questions-container">
+                    <!-- Existing questions will be loaded here -->
+                    @if (Model?.Questions != null && Model.Questions.Count > 0)
+                    {
+                        for (int i = 0; i < Model.Questions.Count; i++)
+                        {
+                            <div class="form-group mb-3" id="question-@i">
+                                <label name="Questions[@i].Text">Question @(i + 1)</label>
+                                <input type="text" class="form-control" name="Questions[@i].Text" value="@Model.Questions[i].Text" readonly />
+                                <input type="hidden" name="Questions[@i].Id" value="@Model.Questions[i].Id" />
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-warning btn-sm edit-question" data-index="@i">Edit</button>
+                                    <button type="button" class="btn btn-danger btn-sm delete-question" data-index="@i">Delete</button>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <button type="button" id="add-question" class="btn btn-success mb-3">Add Question</button>
+
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary w-100 w-sm-auto mx-2">Submit</button>
+                            <a class="btn btn-outline-primary w-100 w-sm-auto mx-2" asp-controller="Questionnaire" asp-action="displayQuestions" role="button">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('questionnaire-form');
+            const container = document.getElementById('questions-container');
+
+            document.getElementById('add-question').addEventListener('click', function () {
+                const index = container.children.length;
+                const questionHtml = `
+                            <div class="form-group mb-3" id="question-${index}">
+                                <label for="Questions_${index}__Text">Question ${index + 1}</label>
+                                <input type="text" id="Questions_${index}__Text" name="Questions[${index}].Text" class="form-control" required />
+                                <input type="hidden" name="Questions[${index}].Id" value="0" />
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-warning btn-sm edit-question" data-index="${index}">Edit</button>
+                                    <button type="button" class="btn btn-danger btn-sm delete-question" data-index="${index}">Delete</button>
+                                </div>
+                            </div>`;
+                container.insertAdjacentHTML('beforeend', questionHtml);
+            });
+
+            document.addEventListener('click', function (event) {
+                if (event.target.classList.contains('delete-question')) {
+                    const index = event.target.getAttribute('data-index');
+                    if (confirm("Are you sure you want to delete this question?")) {
+                        const questionElement = document.getElementById(`question-${index}`);
+                        if (questionElement) {
+                            questionElement.remove();
+                            updateQuestionLabels();
+                        }
+                    }
+                }
+
+                if (event.target.classList.contains('edit-question')) {
+                    const index = event.target.getAttribute('data-index');
+                    const input = document.querySelector(`#question-${index} input[type="text"]`);
+                    const newValue = prompt('Edit question:', input.value);
+                    if (newValue !== null) {
+                        input.value = newValue;
+                    }
+                }
+            });
+
+            function updateQuestionLabels() {
+                const questions = container.querySelectorAll('.form-group');
+                questions.forEach((question, index) => {
+                    const label = question.querySelector('label');
+                    label.textContent = `Question ${index + 1}`;
+                });
+            }
+        });
+    </script>
+}

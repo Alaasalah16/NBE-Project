@@ -1,0 +1,85 @@
+﻿
+@model List<AppUser>
+@{
+    Layout = "_Layout";
+}
+
+                        <div class="container mt-5">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-dark text-white">
+                                    <h2 class="mb-0 text-center">Users</h2>
+                                </div>
+                                <div class="card-body">
+                 @*    <a href=/Guest/AddRole class="text-white btn btn-secondary font-weight-bold text-xs mt-3" style="background-color:#D4AF37;color:white" data-toggle="tooltip" data-original-title="Edit user">
+                        Add
+                    </a>
+                </div>  *@
+             
+                    <div class="table-responsive p-0">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        First Name
+                                    </th>
+                                    <th>
+                                        Last Name
+                            </th>
+                            <th>
+                                UserName
+                            </th>
+                                    <th>
+                                        Address
+                            </th>
+                           
+                                    <th>
+                                        Phone
+                                    </th>
+                                    <th>
+                                        Gender
+                                    </th>
+                                  
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @item.FirstName
+                                        </td>
+                                        <td>
+                                            @item.LastName
+                                </td>
+                                <td>
+                                    @item.UserName
+                                </td>
+                                        <td>
+                                            @item.Address
+                                        </td>
+                                        <td>
+                                            @item.Phone
+                                        </td>
+                                        
+                                        
+                                        <td>
+                                            @item.Gender
+                                        </td>
+                                        <td>
+                                    @* <a asp-action="EditRole" asp-route-id="@item.Id">Edit Roles</a> | *@
+                                            <a asp-action="AddRole" asp-route-id="@item.Id" asp-route-name="@item.FirstName">Addrole</a> |
+                                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                          </table>
+                <a href="@Url.Action("Index", "Settings")" class="btn btn-secondary">Back to Settings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+   

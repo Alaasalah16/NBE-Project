@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = "_Layout3";
+    var completionLabels = ViewBag.CompletionLabels as string; // JSON string containing labels
+    var completionValues = ViewBag.CompletionValues as string; // JSON string containing values
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Welcome to the 360 Security Portal</h2>
+        </div>
+        <div class="card-body">
+            <!-- Greeting and Welcome Message -->
+            <div class="text-center mb-4">
+                <h4>Hello, @User.Identity.Name!</h4>
+                <p>We're glad to have you on board. This portal is designed to help you stay compliant with our security requirements and easily manage your compliance status.</p>
+            </div>
+
+            <div class="row">
+                <!-- Compliance Status with Chart -->
+                <div class="col-md-4 mb-4">
+                    <div class="card border-primary shadow-sm hover-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-check-circle fa-3x text-success"></i>
+                            <h5 class="card-title mt-3">Compliance Status</h5>
+                         
+                            <p class="card-text mt-3">View your current compliance status and track any pending actions.</p>
+                          
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Upload Section -->
+                <div class="col-md-4 mb-4">
+                    <div class="card border-info shadow-sm hover-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-upload fa-3x text-info"></i>
+                            <h5 class="card-title mt-3">Upload Documents</h5>
+                            <p class="card-text">Submit required documents for review and keep your profile up-to-date.</p>
+                          
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div class="col-md-4 mb-4">
+                    <div class="card border-warning shadow-sm hover-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-bell fa-3x text-warning"></i>
+                            <h5 class="card-title mt-3">Notifications</h5>
+                            <p class="card-text">Stay informed about important updates and upcoming compliance deadlines.</p>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assistance Section -->
+            <div class="mt-4 text-center">
+                <h5>Need Assistance?</h5>
+                <p>If you have any questions or need help, feel free to contact our support team at <a href="mailto:support@example.com">support@example.com</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js for Compliance Status Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Parse the labels and values from ViewBag
+    var completionLabels = @Html.Raw(completionLabels);
+    var completionValues = @Html.Raw(completionValues);
+
+    // Create a pie chart for compliance status
+    var ctx = document.getElementById('complianceChart').getContext('2d');
+    var complianceChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: JSON.parse(completionLabels),
+            datasets: [{
+                data: JSON.parse(completionValues),
+                backgroundColor: ['#28a745', '#ffc107', '#dc3545'], // Green, Yellow, Red
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        }
+    });
+</script>
+
+<!-- Add styles for card hover effects and other enhancements -->
+<style>
+    .hover-card:hover {
+        transform: scale(1.05); /* Scale up card on hover */
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        border-color: #28a745; /* Change border color on hover */
+        background-color: #f8f9fa; /* Change background color on hover */
+    }
+
+    .btn-primary:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .btn-info:hover {
+        background-color: #117a8b;
+        border-color: #10707f;
+    }
+
+    .btn-warning:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }
+</style>

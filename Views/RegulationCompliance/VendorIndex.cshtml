@@ -1,0 +1,160 @@
+﻿@model IEnumerable<NBE_Project.ViewModels.RegulationComplianceVM>
+
+@{
+    ViewBag.Title = "Regulation Compliance Messages";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-light">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Regulation Compliance</h2>
+        </div>
+        <div class="card-body">
+            <!-- Form to input Vendor ID and Feedback/CompilationStatus -->
+            <form asp-action="VendorIndex" method="post" class="mb-4">
+                <div class="form-group">
+                    <label for="thirdPartyId" class="control-label">Enter your ID:</label>
+                    <input type="number" name="thirdPartyId" id="thirdPartyId" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Load NBE Messages</button>
+            </form>
+
+            <!-- Card for displaying recent awareness message -->
+            <div class="card mt-3 shadow-sm text-center" style="border: none;">
+                <div class="card-body d-flex flex-column align-items-center">
+                    <i id="animatedIcon" class="fas fa-scale-balanced fa-3x text-success mb-3"></i>
+                    <a href="@Url.Action("RecentCompliance", new { thirdPartyId = ViewBag.ThirdPartyId })" class="btn btn-custom-green">
+                        View Recent Regulation
+                    </a>
+                </div>
+            </div>
+
+            <!-- JavaScript for animation -->
+            <script>
+                function bounceIcon() {
+                    const icon = document.getElementById("animatedIcon");
+                    let position = 0;
+                    let direction = 1;
+
+                    setInterval(() => {
+                        if (position >= 10) direction = -1;
+                        if (position <= 0) direction = 1;
+
+                        position += direction;
+                        icon.style.transform = `translateY(${position}px)`;
+                    }, 100);
+                }
+
+                document.addEventListener("DOMContentLoaded", bounceIcon);
+            </script>
+
+            <!-- Table for listing regulation compliance messages -->
+            <div class="table-responsive mt-4">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Regulation Name</th>
+                            <th>Compliance Date</th>
+                            <th>Comments</th>
+                            <th>Clause</th>
+                            <th>Feedback</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var message in Model)
+                            {
+                                <tr>
+                                    <td>@message.RegulationName</td>
+                                    <td>@message.ComplianceDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@message.Comments</td>
+                                    <td>
+                                        <a href="@Url.Action("VendorDetails", "RegulationCompliance", new { id = message.Id })" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="View Clause">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+
+                                    <!-- Compilation Status and Feedback Form for each row -->
+                                    <td>
+                                        <form class="feedback-form" data-regulation-id="@message.Id">
+                                            <input type="hidden" name="regulationId" value="@message.Id" />
+                                            <div class="form-group">
+                                                <label for="compilationStatus" class="control-label">Compilation Status:</label>
+                                                <select name="compilationStatus" id="compilationStatus" class="form-control">
+                                                    <option value="Compiled">Compiled</option>
+                                                    <option value="Partially Compiled">Partially Compiled</option>
+                                                    <option value="Non-Compiled">Non-Compiled</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="feedback" class="control-label">Feedback:</label>
+                                                <textarea name="feedback" id="feedback" class="form-control" rows="3"></textarea>
+                                            </div>
+
+                                            <button type="button" class="btn btn-success btn-sm submit-btn">Submit</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center">No regulation compliance messages found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+<!-- Bootstrap -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Attach event listeners to all submit buttons
+        document.querySelectorAll('.submit-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const form = this.closest('.feedback-form');
+                const regulationId = form.getAttribute('data-regulation-id');
+                const compilationStatus = form.querySelector('[name="compilationStatus"]').value;
+                const feedback = form.querySelector('[name="feedback"]').value;
+
+                // Display SweetAlert2 for feedback
+                Swal.fire({
+                    title: 'Submit Feedback',
+                    text: 'Are you sure you want to submit this feedback?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Display SweetAlert2 for compilation status
+                        Swal.fire({
+                            title: 'Compilation Status',
+                            text: `Regulation ID: ${regulationId}\nCompilation Status: ${compilationStatus}\nFeedback: ${feedback}`,
+                            icon: 'info',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            // Optionally, submit the form after showing the alert
+                            form.submit();
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>

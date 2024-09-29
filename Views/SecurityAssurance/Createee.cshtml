@@ -1,0 +1,73 @@
+﻿@model NBE_Project.ViewModels.SecurityAssuranceVM
+
+@{
+    ViewData["Title"] = "Security Assurance";
+    Layout = "_Layout3";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Security Assurance</h2>
+        </div>
+        <div class="card-body">
+            <form id="securityAssuranceForm" asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="VendorCategory" class="control-label">Vendor Category</label>
+                    <select asp-for="VendorCategory" class="form-control">
+                        <option value="">Select Vendor Category</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                       
+                    </select>
+                    <span asp-validation-for="VendorCategory" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="SOCType2Report">SOC Type 2 Report</label>
+                    <input type="file" name="SOCType2Report" class="form-control grey-text-field" id="SOCType2Report" />
+                    <span asp-validation-for="SOCType2Report" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="SOCReportExpirationDate">SOC Type 2 Report Expiration Date</label>
+                    <input type="date" name="SOCReportExpirationDate" class="form-control grey-text-field" id="SOCReportExpirationDate" />
+                </div>
+
+
+                <div class="text-left mt-4">
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-custom-green w-100 w-sm-auto mx-2">Submit</button>
+                        <a asp-controller="VendorHome" asp-action="Index" class="btn btn-secondary w-100 w-sm-auto mx-2">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Custom JavaScript for SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('securityAssuranceForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to submit this form?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, submit it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.submit(); // Submit the form if confirmed
+            }
+        });
+    });
+</script>

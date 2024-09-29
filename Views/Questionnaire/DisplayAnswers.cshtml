@@ -1,0 +1,43 @@
+﻿@model IEnumerable<NBE_Project.ViewModels.AnswerDisplayViewModel>
+
+@{
+    ViewData["Title"] = "Submitted Answers";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">Submitted Answers</h2>
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="mb-4 p-3 border rounded">
+                        <h4 class="text-primary">@item.Question.Text</h4>
+                        <ul class="list-unstyled">
+                            @foreach (var answer in item.Answers)
+                            {
+                                <li class="mb-2">
+                                    <div class="bg-light p-2 rounded">
+                                        @answer.AnswerText
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-center text-muted">No answers available.</p>
+            }
+
+            <div class="text-center mt-4">
+                <a href="@Url.Action("HighIndex", "SecurityAssurance")" class="btn btn-primary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

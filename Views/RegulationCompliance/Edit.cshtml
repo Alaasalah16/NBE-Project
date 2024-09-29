@@ -1,0 +1,60 @@
+﻿@model NBE_Project.ViewModels.RegulationComplianceVM
+
+@{
+    ViewData["Title"] = "Edit Regulation Compliance";
+    Layout = "_Layout";
+}
+
+<h2>Edit Regulation Compliance</h2>
+
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label asp-for="ThirdPartyId" class="control-label">Third Party</label>
+        <select asp-for="ThirdPartyId" class="form-control" ></select>
+        <span asp-validation-for="ThirdPartyId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RegulationName" class="control-label">Regulation Name</label>
+        <input asp-for="RegulationName" class="form-control" />
+        <span asp-validation-for="RegulationName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ComplianceDate" class="control-label">Compliance Date</label>
+        <input asp-for="ComplianceDate" class="form-control" type="date" />
+        <span asp-validation-for="ComplianceDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Comments" class="control-label">Comments</label>
+        <textarea asp-for="Comments" class="form-control"></textarea>
+        <span asp-validation-for="Comments" class="text-danger"></span>
+    </div>
+
+    <!-- Clause details -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Clause Name</th>
+                <th>Requirements</th>
+                <th>Compilation Status</th>
+                <th>Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var clause in Model.Clauses)
+            {
+                <tr>
+                    <td>@clause.ClauseName</td>
+                    <td>@clause.Requirements</td>
+                    <td>@clause.CompilationStatus</td>
+                    <td>@clause.Comments</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</form>

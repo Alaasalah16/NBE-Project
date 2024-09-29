@@ -1,0 +1,67 @@
+﻿@model IEnumerable<NBE_Project.ViewModels.QuestinareDTO>
+
+@{
+    ViewData["Title"] = "Submitted Answers For Vendor";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Submitted Answers for ThirdParty @ViewBag.VendorName </h2>
+        </div>
+        <div class="card-body">
+            @foreach (var item in Model)
+            {
+              @*   <div class="form-group mb-4">
+                    <label for="VendorName" class="control-label">Vendor ID:</label>
+                    <input type="text" value="@ViewBag.VendorId" class="form-control" readonly />
+                </div>
+ *@
+             
+            <div class="form-group mb-4">
+            <label for="VendorName" class="control-label">Vendor Name:</label>
+            <input type="text" value="@ViewBag.VendorName" class="form-control" readonly />
+            </div>
+            
+
+            @*     <div class="form-group mb-4">
+                    <label for="Name" class="control-label">Question Name:</label>
+                    <input type="text" value="@item.Name" class="form-control" readonly />
+                </div>
+ *@
+                <div class="form-group mb-4">
+                    <label for="QuestionOne" class="control-label">How & Where Data Store?</label>
+                    <input type="text" value="@item.QuestionOne" class="form-control" readonly />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="QuestionTwo" class="control-label">How is Data encrypted?</label>
+                    <input type="text" value="@item.QuestionTwo" class="form-control" readonly />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="QuestionThree" class="control-label">Do You Have Formal Incident Plan?</label>
+                    <input type="text" value="@item.QuestionThree" class="form-control" readonly />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="QuestionFour" class="control-label">How is Data Transmitted?</label>
+                    <input type="text" value="@item.QuestionFour" class="form-control" readonly />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="QuestionFive" class="control-label">How Do You Manage Remote Access to Data?</label>
+                    <input type="text" value="@item.QuestionFive" class="form-control" readonly />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="Description" class="control-label">Comments:</label>
+                    <textarea class="form-control" rows="4" readonly>@item.Description</textarea>
+                </div>
+
+                <hr /> 
+            }
+        </div>
+    </div>
+</div>

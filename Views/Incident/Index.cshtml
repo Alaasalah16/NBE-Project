@@ -1,0 +1,187 @@
+﻿@model IEnumerable<NBE_Project.Models.Incident>
+
+@{
+    ViewData["Title"] = "Incidents";
+    Layout = "_Layout";
+
+    // Calculate summary information
+    var totalIncidents = Model.Count();
+    var incidentsBySeverity = Model.GroupBy(i => i.Severity)
+                                   .Select(g => new { Severity = g.Key, Count = g.Count() })
+                                   .ToList();
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">Incidents</h2>
+        </div>
+        <div class="card-body">
+            <!-- Summary Information -->
+            <div class="row mb-4">
+                <!-- Total Incidents -->
+                <div class="col-md-3 mb-3">
+                    <div class="d-flex align-items-center p-3 bg-light border border-primary rounded-3 shadow-sm">
+                        <i class="fas fa-clipboard-list fa-2x text-primary me-3"></i>
+                        <div>
+                            <h5 class="mb-1">Total Incidents</h5>
+                            <p class="fs-4 mb-0">@totalIncidents</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Severity Information -->
+                @foreach (var severity in incidentsBySeverity)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div class="d-flex align-items-center p-3 bg-light border border-danger rounded-3 shadow-sm">
+                            <i class="fas fa-exclamation-triangle fa-2x text-warning me-3"></i>
+                            <div>
+                                <h5 class="mb-1">@severity.Severity</h5>
+                                <p class="fs-4 mb-0">@severity.Count</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Search Bar -->
+            <div class="mb-3">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search incidents..." aria-label="Search incidents" onkeyup="searchTable()">
+                <small class="form-text text-muted">You can search by Vendor, Incident No., Severity, Status, or Incident Description.</small>
+            </div>
+
+            <!-- Export Button -->
+            <div class="col text-end mt-3">
+                <button id="exportToExcelBtn" class="btn btn-primary">Export as Excel</button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-striped" aria-label="Incident Table">
+                    <thead>
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Incident No.</th>
+                            <th>Incident Description</th>
+                            <th>Severity</th>
+                            <th>Status</th>
+                            <th>Incident Date</th>
+                            <th>Mitigation Action</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="incidentTableBody">
+                        @foreach (var incident in Model)
+                        {
+                            <tr>
+                                <td>@incident.ThirdParty?.VendorName</td>
+                                <td>@incident.IncidentNo</td>
+                                <td>@incident.IncidentDescription</td>
+                                <td>
+                                    <span class="badge @(incident.Severity == "High" ? "bg-danger" : incident.Severity == "Medium" ? "bg-warning" : "bg-success")">
+                                        @incident.Severity
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge @(incident.Status == "Open" ? "bg-danger" : incident.Status == "In Progress" ? "bg-warning" : "bg-success")">
+                                        @incident.Status
+                                    </span>
+                                </td>
+                                <td>@incident.IncidentDate.ToShortDateString()</td>
+                                <td>@incident.MitigationAction</td>
+                                <td>
+                                    <a class="btn btn-primary btn-sm" asp-controller="Incident" asp-action="Details" asp-route-id="@incident.Id" aria-label="View details for Incident @incident.IncidentNo">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-text {
+        font-size: 1.25rem;
+        margin-bottom: 0;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        border-radius: 0.2rem;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table td {
+        white-space: nowrap; /* Prevents text from wrapping */
+        overflow: hidden; /* Hides overflowed text */
+        text-overflow: ellipsis; /* Adds ellipsis (...) */
+        max-width: 200px; /* Adjust based on your layout */
+    }
+</style>
+
+<script>
+    // Search function for the table
+    function searchTable() {
+        var input = document.getElementById("searchInput");
+        var filter = input.value.toLowerCase();
+        var table = document.querySelector("table");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+            var td = tr[i].getElementsByTagName("td");
+            var display = "none";
+            for (var j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    var txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        display = "";
+                        break;
+                    }
+                }
+            }
+            tr[i].style.display = display;
+        }
+    }
+
+    // Export to Excel function
+    document.getElementById('exportToExcelBtn').addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent default action
+
+        // Get the table data
+        var table = document.querySelector("table");
+        var wb = XLSX.utils.table_to_book(table, { sheet: "Incidents" });
+
+        // Generate Excel file and trigger download
+        XLSX.writeFile(wb, 'Incidents_Export.xlsx');
+    });
+</script>

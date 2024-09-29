@@ -1,0 +1,58 @@
+﻿@model NBE_Project.Models.RegulationCompliance
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "_Layout3";
+}
+
+
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0  text-center">Regulation Details</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                @* <div class="col-md-6"> *@
+
+                <div>
+                    <h4>Regulation Name: @Model.RegulationName</h4>
+                    <p><strong>Third Party:</strong> @Model.ThirdPartyId</p>
+                    <p><strong>Compliance Date:</strong> @Model.ComplianceDate.ToShortDateString()</p>
+                    <p><strong>Comments:</strong> @Model.Comments</p>
+                </div>
+
+                <h4>Clauses</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Clause Name</th>
+                            <th>Requirements</th>
+                            <th>Compilation Status</th>
+                            <th>Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var clause in Model.Clauses)
+                        {
+                            <tr>
+                                <td>@clause.ClauseName</td>
+                                <td>@clause.Requirements</td>
+                                <td>@clause.CompilationStatus</td>
+                                <td>@clause.Comments</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <a asp-action="Index" class="btn btn-primary ">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+

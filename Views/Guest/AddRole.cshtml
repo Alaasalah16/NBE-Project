@@ -1,0 +1,132 @@
+﻿@using NBE_Project.ViewModels
+@model GusetRoleVM
+@{
+    Layout = "_Layout";
+}
+
+<form method="post" asp-action="AddRole" asp-controller="Guest" class="form-modern-big" novalidate>
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="GuestId" />
+
+    <div class="form-group">
+        <label asp-for="RoleName" class="form-label-modern-big">
+            <i class="fas fa-user-tag fa-lg"></i> Select Role Type
+            <span class="tooltip-icon-big" data-bs-toggle="tooltip" data-bs-placement="top" title="Choose a role for the guest from the dropdown.">
+                <i class="fas fa-info-circle fa-lg"></i>
+            </span>
+        </label>
+        <select class="form-control-modern-big" asp-for="RoleName" asp-items="@(new SelectList(Model.roleNames))" required aria-required="true">
+            <option value="" disabled selected>-- Select Role --</option>
+        </select>
+        <span asp-validation-for="RoleName" class="text-danger-modern-big"></span>
+    </div>
+
+    <div class="form-group mt-4 text-center">
+        <button type="submit" class="btn-modern-big">
+            <i class="fas fa-plus-circle fa-lg"></i> Add Role
+        </button>
+        <button type="button" class="btn-modern-big btn-cancel" onclick="window.location.href='@Url.Action("Index", "Guest")'">
+            <i class="fas fa-times-circle fa-lg"></i> Cancel
+        </button>
+    </div>
+</form>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip(); // Initialize tooltips
+
+        // Custom form validation logic
+        $('.form-modern-big').on('submit', function (e) {
+            if (this.checkValidity() === false) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            $(this).addClass('was-validated');
+        });
+    });
+</script>
+
+<style>
+    /* Custom modern, large styles */
+    .form-modern-big {
+        background: linear-gradient(135deg, #f9fafb, #ffffff);
+        padding: 4rem;
+        border-radius: 25px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        max-width: 900px;
+        margin: 3rem auto;
+        transition: all 0.3s ease;
+    }
+
+        .form-modern-big:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+
+    .form-label-modern-big {
+        font-size: 1.5rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-control-modern-big {
+        width: 100%;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 2px solid #ced4da;
+        font-size: 1.2rem;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control-modern-big:focus {
+            border-color: #66afe9;
+            box-shadow: none;
+        }
+
+    .btn-modern-big {
+        display: inline-flex;
+        align-items: center;
+        background-color: #b66dff;
+        color: white;
+        padding: 1rem 2.5rem;
+        font-size: 1.3rem;
+        border-radius: 35px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-right: 15px;
+    }
+
+        .btn-modern-big:hover {
+            background-color: #c183ff;
+        }
+
+    .btn-cancel {
+        background-color: #ff6b6b;
+    }
+
+        .btn-cancel:hover {
+            background-color: #ff8b8b;
+        }
+
+    .tooltip-icon-big {
+        margin-left: 12px;
+        color: #6c757d;
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+
+    .text-danger-modern-big {
+        font-size: 1.2rem;
+        color: #dc3545;
+        margin-top: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 2.5rem;
+    }
+</style>

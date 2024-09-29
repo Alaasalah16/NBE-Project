@@ -1,0 +1,73 @@
+﻿@model IEnumerable<NBE_Project.Models.Question>
+
+@{
+    ViewData["Title"] = "Display Questions";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">Security Questionnaire</h2>
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var question in Model)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><strong>Question @question.Id:</strong> @question.Text</span>
+                            <form asp-action="DeleteQuestion" method="post" class="mb-0 delete-form">
+                                <input type="hidden" name="questionId" value="@question.Id" />
+                                <button type="button" class="btn btn-danger btn-sm delete-button">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-center">No questions found.</p>
+            }
+
+            <div class="text-center mt-4">
+                <a class="btn btn-primary" asp-action="Create">Add More Questions</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+@section Scripts {
+    <script>
+        // Handle the delete button click with SweetAlert confirmation
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const form = this.closest('form');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // Submit the form if confirmed
+                    }
+                });
+            });
+        });
+    </script>
+}

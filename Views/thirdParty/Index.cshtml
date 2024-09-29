@@ -1,0 +1,236 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<style>
+    .page-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0;
+    }
+
+    .card {
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+    .card-header {
+        background-color: #333;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .table thead th {
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #f0f0f0;
+            border-bottom: 2px solid #ddd;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .table tbody td {
+            font-size: 14px;
+            padding: 10px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+    .btn-primary, .btn-danger, .btn-outline-primary {
+        font-size: 16px;
+        padding: 10px 15px;
+        border-radius: 4px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .top-section {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .sorting-indicator {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+    }
+
+    .asc::after {
+        content: '▲';
+    }
+
+    .desc::after {
+        content: '▼';
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header text-white text-center">
+            <h2 class="mb-0">Third Party Vendors</h2>
+        </div>
+        <div class="card-body">
+            <div class="top-section mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search vendors..." onkeyup="filterTable()">
+            </div>
+
+            <!-- Navigation Button to Excel Pages -->
+            <div class="row mb-3">
+                <div class="col-md-6 d-flex justify-content-start">
+                    <div class="top-section me-2">
+                        <a href="@Url.Action("Index", "ExcelFile")" class="btn btn-gradient-primary">
+                            <i class="fas fa-file-excel me-2"></i>
+                            Import
+                        </a>
+                    </div>
+                    <div class="top-section">
+                        <button id="exportButton" class="btn btn-gradient-success">
+                            <i class="fas fa-file-export me-2"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table" id="myTable">
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Vendor Category</th>
+                        <th>Contract</th>
+                        <th >Contract Start Date </th>
+                        <th>Contract End Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.VendorName</td>
+                            <td>@item.VendorCategory</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ContractName))
+                                {
+                                    <a href="@item.ContractName" download>Download Contract</a>
+                                }
+                                else
+                                {
+                                    <span>No Contract Available</span>
+                                }
+                            </td>
+                            <td>@item.ContractStartDate.ToString("MM/dd/yyyy")</td>
+                            <td>@item.ContractEndDate.ToString("MM/dd/yyyy")</td>
+                            <td style="white-space: nowrap;">
+                                <a class="btn btn-primary btn-sm" asp-controller="ThirdParty" asp-action="Edit" asp-route-id="@item.Id" title="Edit Vendor">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                <a class="btn btn-info btn-sm" asp-controller="ThirdParty" asp-action="Detail" asp-route-id="@item.Id" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a class="btn btn-danger btn-sm delete-button" href="@Url.Action("Delete", "ThirdParty", new { id = item.Id })" title="Delete Vendor">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const deleteUrl = this.getAttribute('href');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This action cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = deleteUrl;
+                    }
+                });
+            });
+        });
+
+        function filterTable() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let table = document.getElementById('myTable');
+            let tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName('td');
+                let match = false;
+                for (let j = 0; j < td.length - 1; j++) {
+                    if (td[j].textContent.toLowerCase().indexOf(input) > -1) {
+                        match = true;
+                        break;
+                    }
+                }
+                tr[i].style.display = match ? '' : 'none';
+            }
+        }
+
+       
+
+        document.getElementById('exportButton').addEventListener('click', function () {
+            let table = document.getElementById('myTable');
+            let rows = Array.from(table.getElementsByTagName('tr'));
+            let csvContent = "data:text/csv;charset=utf-8,";
+
+            rows.forEach((row, index) => {
+                let cols = row.getElementsByTagName('td');
+                let rowData = [];
+                if (index === 0) { // Header row
+                    let headerCols = row.getElementsByTagName('th');
+                    rowData = Array.from(headerCols).map(th => th.textContent.trim());
+                } else { // Data rows
+                    for (let i = 0; i < cols.length - 1; i++) { // Exclude the last column (Action)
+                        rowData.push(cols[i].textContent.trim());
+                    }
+                }
+                csvContent += rowData.join(",") + "\r\n";
+            });
+
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "vendors_data.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+}

@@ -1,0 +1,58 @@
+﻿@model NBE_Project.Models.Incident
+
+@{
+    ViewData["Title"] = "Incident Details";
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Incident Details</h2>
+        </div>
+        <div class="card-body">
+            <div class="card mt-4 shadow-sm">
+                <div class="card-header">
+                    <span class="fw-bold">Incident ID:</span> @Model.Id
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-hashtag"></i> Incident No: @Model.IncidentNo</h5>
+
+                    <p class="card-text">
+                        <strong><i class="fas fa-align-left"></i> Description:</strong> @Model.IncidentDescription
+                    </p>
+
+                    <p class="card-text">
+                        <strong><i class="fas fa-exclamation-circle"></i> Severity:</strong>
+                        <span class="badge @(Model.Severity == "High" ? "bg-danger" : Model.Severity == "Medium" ? "bg-warning" : "bg-success")">
+                            @Model.Severity
+                        </span>
+                    </p>
+
+                    <p class="card-text">
+                        <strong><i class="fas fa-info-circle"></i> Status:</strong>
+                        <span class="badge @(Model.Status == "Open" ? "bg-danger" : Model.Status == "In Progress" ? "bg-warning" : "bg-success")">
+                            @Model.Status
+                        </span>
+                    </p>
+
+                    <p class="card-text">
+                        <strong><i class="fas fa-calendar-day"></i> Incident Date:</strong>
+                        @Model.IncidentDate.ToString("yyyy-MM-dd HH:mm")
+                    </p>
+
+                    <p class="card-text">
+                        <strong><i class="fas fa-align-left"></i> Mitigation Action:</strong> @Model.MitigationAction
+                    </p>
+                </div>
+                <div class="text-center mb-3">
+                    <a href="@Url.Action("Index", "Incident")" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

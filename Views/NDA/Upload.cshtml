@@ -1,0 +1,91 @@
+﻿@model NBE_Project.ViewModels.NDAViewModel
+
+@{
+    ViewData["Title"] = "Upload NDA";
+    Layout = "_Layout3";
+}
+
+<!-- Include SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+<!-- Include SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Non-disclosure Agreement</h2>
+        </div>
+        <div class="card-body">
+            <form id="ndaForm" asp-action="Upload" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label asp-for="NDAFile" class="control-label">Upload NDA File</label>
+                    <input asp-for="NDAFile" type="file" class="form-control grey-text-field" />
+                    <span asp-validation-for="NDAFile" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label asp-for="NDAStartDate" class="control-label">NDA Start Date</label>
+                        <input asp-for="NDAStartDate" type="date" class="form-control grey-text-field" />
+                        <span asp-validation-for="NDAStartDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="NDAEndDate" class="control-label">NDA End Date</label>
+                        <input asp-for="NDAEndDate" type="date" class="form-control grey-text-field" />
+                        <span asp-validation-for="NDAEndDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-3 card-body-padding">
+                <div class="form-group ">
+                    <label class="control-label">Is Renewable</label>
+                    <div class="form-check">
+                        <input asp-for="IsRenewable" type="radio" value="true" class="form-check-input" id="isRenewableYes" />
+                        <label class="form-check-label" for="isRenewableYes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="IsRenewable" type="radio" value="false" class="form-check-input" id="isRenewableNo" />
+                        <label class="form-check-label" for="isRenewableNo">No</label>
+                    </div>
+                    <span asp-validation-for="IsRenewable" class="text-danger"></span>
+                </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ScopeOfWork" class="control-label">Scope of Work</label>
+                    <textarea asp-for="ScopeOfWork" class="form-control grey-text-field" rows="3"></textarea>
+                    <span asp-validation-for="ScopeOfWork" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-custom-green w-100 w-sm-auto mx-2">Submit</button>
+                            <a asp-controller="VendorHome" asp-action="Index" class="btn btn-secondary w-100 w-sm-auto mx-2">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Custom JavaScript for SweetAlert2 -->
+<script>
+    document.getElementById('ndaForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to upload this NDA?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, upload it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.submit(); // Submit the form if confirmed
+            }
+        });
+    });
+</script>

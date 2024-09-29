@@ -1,0 +1,139 @@
+﻿@model IEnumerable<TransactionLog>
+@{
+    ViewBag.Title = "Transaction Logs";
+    Layout = "_Layout";
+
+    int currentPage = 1; // Initialize currentPage
+    int pageSize = 10; // Number of records to display per page
+    int totalRecords = Model.Count(); // Total records from the model
+    int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize); // Calculate total pages
+}
+@* <div class="card-header bg-dark text-white"> *@
+    <h2>  <i class="mdi mdi-clipboard-text menu-icon"></i>Transaction Logs by Role:  @ViewBag.Role </h2>
+@* </div> *@
+
+
+<style>
+    /* Your existing styles */
+
+</style>
+
+@if (!Model.Any())
+{
+    <p>No logs found for the role: @ViewBag.Role</p>
+}
+else
+{
+    // Adjust the model for pagination
+    var paginatedModel = Model.Skip((currentPage - 1) * pageSize).Take(pageSize);
+
+    var usernameImageMap = new Dictionary<string, string>(); // To store username and corresponding image
+    var currentImageIndex = 1; // Starting image index
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Table Name</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Action Type</th>
+                <th>Command Type</th>
+                <th>Change Summary</th>
+                <th>Change Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in paginatedModel)
+            {
+                string imagePath;
+
+                // Check if the username is already in the map
+                if (usernameImageMap.ContainsKey(log.Username))
+                {
+                    imagePath = usernameImageMap[log.Username]; // Use existing image
+                }
+                else
+                {
+                    // Create a new image entry for the username
+                    imagePath = $"~/assets/images/faces/face{currentImageIndex}.jpg";
+                    usernameImageMap[log.Username] = imagePath; // Map username to image path
+                    currentImageIndex++; // Increment image index for the next unique user
+
+                    // Ensure we do not exceed the number of images available
+                    if (currentImageIndex > 10) // Adjust this number based on the actual number of images
+                    {
+                        currentImageIndex = 1; // Reset to 1 or handle accordingly
+                    }
+                }
+
+                <tr>
+                    <td>@log.TableName</td>
+                    <td>
+                        <img src="@Url.Content(imagePath)" class="user-image" alt="User Image" />
+                        @log.Username
+                    </td>
+                    <td>@log.Role</td>
+                    <td>@log.ActionType</td>
+                    <td>@log.CommandType</td>
+                    <td>@log.ChangeSummary</td>
+                    <td>@log.ChangeDate.ToString("g")</td> <!-- Display date in a readable format -->
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <a href="@Url.Action("RoleBasedLogs", new { page = i })" class="btn @(i == currentPage ? "btn-primary" : "btn-outline-primary")">@i</a>
+        }
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-5 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body p-0 d-flex">
+                    <div id="inline-datepicker" class="datepicker datepicker-custom"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Recent Updates</h4>
+                    <div class="d-flex">
+                        <div class="d-flex align-items-center me-4 text-muted font-weight-light">
+                            <i class="mdi mdi-account-outline icon-sm me-2"></i>
+                            <span>@User.Identity.Name</span>
+                        </div>
+                        <div class="d-flex align-items-center text-muted font-weight-light">
+                            <i class="mdi mdi-clock icon-sm me-2"></i>
+                            <span>October 3rd, 2018</span>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-6 pe-1">
+                            <img src="../assets/images/dashboard/img_1.jpg" class="mb-2 mw-100 w-100 rounded" alt="image">
+                            <img src="../assets/images/dashboard/img_4.jpg" class="mw-100 w-100 rounded" alt="image">
+                        </div>
+                        <div class="col-6 ps-1">
+                            <img src="../assets/images/dashboard/img_2.jpg" class="mb-2 mw-100 w-100 rounded" alt="image">
+                            <img src="../assets/images/dashboard/img_3.jpg" class="mw-100 w-100 rounded" alt="image">
+                        </div>
+                    </div>
+                    <div class="d-flex mt-5 align-items-top">
+                      <img src="~/assets/images/favicon.png" class="img-sm rounded-circle me-3" alt="image">
+                        <div class="mb-0 flex-grow">
+                            <h5 class="me-2 mb-2">Bank Website - Authentication Module.</h5>
+                            <p class="mb-0 font-weight-light">All rights reserved to Al Ahly Bank.2024</p>
+                        </div>
+                        <div class="ms-auto">
+                            <i class="mdi mdi-heart-outline text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

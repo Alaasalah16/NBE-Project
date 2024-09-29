@@ -1,0 +1,52 @@
+﻿@model NBE_Project.Models.Audit // Replace with the actual namespace and model name
+
+@{
+    ViewData["Title"] = "Audit Details";
+    Layout = "_Layout"; // Adjust if needed
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0">Audit Details</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h4>Audit Information</h4>
+                    <p><strong>Vendor Name:</strong> @(Model.ThirdParty != null ? Model.ThirdParty.VendorName : "No Vendor")</p>
+
+                    <p><strong>Findings Name:</strong> @Model.FindingsName</p>
+                    <p><strong>Findings Date:</strong> @Model.FindingsDate.ToString("d")</p>
+                    <p><strong>Status:</strong> @Model.Status</p>
+                    <p><strong>Action Taken:</strong> @Model.ActionTaken</p>
+                </div>
+                <div class="col-md-6">
+                    <h4>Additional Information</h4>
+                    <p><strong>Comment:</strong> @Model.Comment</p>
+
+                    <!-- Evidence File Section -->
+                    @if (!string.IsNullOrEmpty(Model.EvidenceFileName))
+                    {
+                        <div>
+                            <p><strong>Evidence File:</strong></p>
+                            <a href="/evidenceFiles/@Model.EvidenceFileName" download class="btn btn-primary btn-sm">
+                                <i class="fas fa-download ms"></i> 
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <p><strong>Evidence File:</strong> No file uploaded</p>
+                    }
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a asp-action="Index" class="btn btn-primary ">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

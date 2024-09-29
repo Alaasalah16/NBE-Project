@@ -1,0 +1,82 @@
+﻿@model NBE_Project.ViewModels.QuestinareDTO
+
+@{
+    ViewBag.Title = "Check Questions";
+    Layout = "_Layout3";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Questionnaire</h2>
+        </div>
+
+        <div class="card-body text-left">
+            <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <input type="hidden" asp-for="ThirdPartyId" />
+                @*   <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label">Name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+                </div> *@
+
+                <div class="form-group mb-3 text-left">
+                    <label asp-for="QuestionOne" class="control-label">How & Where Data Store?</label>
+                    <input asp-for="QuestionOne" class="form-control grey-text-field" />
+                    <span asp-validation-for="QuestionOne" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3 text-left">
+                    <label asp-for="QuestionTwo" class="control-label">How is Data encrypted?</label>
+                    <input asp-for="QuestionTwo" class="form-control grey-text-field" />
+                    <span asp-validation-for="QuestionTwo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3 text-left">
+                    <label asp-for="QuestionThree" class="control-label">DO You Have Formal Incident Plan?</label>
+                    <select asp-for="QuestionThree" class="form-control grey-text-field">
+                        <option value="Option1">Yes</option>
+                        <option value="Option2">No</option>
+                        <option value="Option3">Maybe</option>
+                    </select>
+                    <span asp-validation-for="QuestionThree" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3 text-left">
+                    <label asp-for="QuestionFour" class="control-label">How is Data Transmited?</label>
+                    <input asp-for="QuestionFour" class="form-control grey-text-field" />
+                    <span asp-validation-for="QuestionFour" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3 text-left">
+                    <label class="control-label">How Do You Managed Remoted Access to Data?</label>
+                    <input asp-for="QuestionFive" class="form-control grey-text-field" />
+                    @*  <div class="form-check">
+                    <input asp-for="QuestionFive" type="radio" class="form-check-input" value="Free" id="questionFiveFree" checked />
+                    <label class="form-check-label" for="questionFiveFree">Free</label>
+                    </div>
+                    <div class="form-check">
+                    <input asp-for="QuestionFive" type="radio" class="form-check-input" value="Professional" id="questionFiveProfessional" />
+                    <label class="form-check-label" for="questionFiveProfessional">Professional</label>
+                    </div> *@
+                    <span asp-validation-for="QuestionFive" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3 text-left">
+                    <label asp-for="Description" class="control-label">Comments</label>
+                    <textarea asp-for="Description" class="form-control grey-text-field" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-custom-green w-100 w-sm-auto mx-2">Submit</button>
+                    <a asp-controller="SecurityAssurance" asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>

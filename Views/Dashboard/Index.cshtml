@@ -1,0 +1,294 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    Layout = "_Layout";
+    var completionLabels = ViewBag.CompletionLabels as string;
+    var completionValues = ViewBag.CompletionValues as string;
+    var labels = @Html.Raw(ViewBag.CompletionLabels);
+    var data = @Html.Raw(ViewBag.CompletionValues);
+
+}
+
+<div class="content-wrapper">
+    <div class="page-header">
+        <h3 class="page-title">
+            <span class="page-title-icon bg-gradient-primary text-white me-2">
+                <i class="mdi mdi-home"></i>
+            </span>
+            Dashboard
+        </h3>
+    </div>
+    <div class="row">
+        <!-- Card for Third Party Vendors -->
+        <div class="col-md-4 stretch-card grid-margin">
+            <div class="card bg-gradient-danger card-img-holder text-white shadow-lg hover-effect">
+                <div class="card-body">
+                    <img src="~/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                    <div class="d-flex align-items-center mb-3">
+                        <h4 class="font-weight-normal">Third Party Vendors</h4>
+                        <i class="mdi mdi-account-multiple mdi-24px ms-auto animate__animated animate__bounceIn"></i>
+                    </div>
+                    <h2 class="mb-5">No. of Vendors = @ViewBag.ThirdPartyCount</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card for Reporting -->
+        <div class="col-md-4 stretch-card grid-margin">
+            <div class="card bg-gradient-info card-img-holder text-white shadow-lg hover-effect" id="vendorCard">
+                <div class="card-body">
+                    <img src="~/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                    <div class="d-flex align-items-center mb-3">
+                        <h4 class="font-weight-normal">Vendors Activities</h4>
+                        <i class="mdi mdi-bookmark-outline mdi-24px ms-auto animate__animated animate__rubberBand"></i>
+                    </div>
+                    <h2 class="mb-5">Reporting</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card for Activity Log -->
+        <div class="col-md-4 stretch-card grid-margin">
+            <div class="card bg-gradient-success card-img-holder text-white shadow-lg hover-effect" id="activityLogCard">
+                <div class="card-body">
+                    <img src="~/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                    <div class="d-flex align-items-center mb-3">
+                        <h4 class="font-weight-normal">ActivityLog</h4>
+                        <i class="mdi mdi-bell mdi-24px ms-auto animate__animated animate__shakeX"></i>
+                    </div>
+                    <h2 class="mb-5">Transaction</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for navigation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var vendorCard = document.getElementById('vendorCard');
+            var activityLogCard = document.getElementById('activityLogCard');
+
+            vendorCard.addEventListener('click', function () {
+                window.location.href = '@Url.Action("Index", "Report")';
+            });
+
+            activityLogCard.addEventListener('click', function () {
+                window.location.href = '@Url.Action("RoleBasedLogs", "Activities")';
+            });
+        });
+    </script>
+
+
+<!-- Include Animate.css for animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+<style>
+    .hover-effect {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-effect:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+    .bg-gradient-danger {
+        background: linear-gradient(135deg, #f44336, #e91e63);
+    }
+
+    .bg-gradient-info {
+        background: linear-gradient(135deg, #2196f3, #03a9f4);
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #4caf50, #8bc34a);
+    }
+
+    .card-img-absolute {
+        top: 0;
+        right: 0;
+        width: 70%;
+        height: 100%;
+        opacity:0.4;
+        pointer-events: none;
+    }
+</style>
+@* <hr class="line-divider"> *@
+
+@* Include Chart.js *@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="row">
+    <!-- Vendor Categories Chart -->
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Vendor Categories</h4>
+                <canvas id="vendor-category-chart" width="100%" height="60"></canvas>
+               
+                <p>
+                  
+                    <ul>
+                        <li><strong>Low:</strong> No mutual data exchange</li>
+                        <li><strong>Medium:</strong> Mutual data exchange</li>
+                        <li><strong>High:</strong> Extensive mutual data exchange</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Data for Vendor Categories
+            var categories = @Html.Raw(ViewBag.VendorCategories);
+            var counts = @Html.Raw(ViewBag.VendorCounts);
+
+            var ctx = document.getElementById('vendor-category-chart').getContext('2d');
+            var vendorCategoryChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                        hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+    <!-- Vendor Profile Completion Chart -->
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Vendor Profile Completion</h4>
+                <canvas id="profile-completion-chart" width="100" height="60"></canvas>
+                <!-- Summary Information -->
+                <div id="completion-summary">
+                    <ul>
+                        <li><strong>Total Vendors:</strong> <span id="profile-total-count"></span></li>
+                        <li><strong>Completed Profiles:</strong> <span id="completed-profile-count"></span></li>
+                        <li><strong>Incomplete Profiles:</strong> <span id="incomplete-profile-count"></span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Data for Vendor Profile Completion Chart
+            var labels = @Html.Raw(ViewBag.CompletionLabels);
+            var data = @Html.Raw(ViewBag.CompletionValues);
+
+            // Create gradient color for the chart
+            var ctx2 = document.getElementById('profile-completion-chart').getContext('2d');
+            var gradient1 = ctx2.createLinearGradient(0, 0, 0, 400);
+            gradient1.addColorStop(0, 'rgba(75, 192, 192, 0.6)');
+            gradient1.addColorStop(1, 'rgba(75, 192, 192, 0.2)');
+
+            var gradient2 = ctx2.createLinearGradient(0, 0, 0, 400);
+            gradient2.addColorStop(0, 'rgba(54, 162, 235, 0.6)');
+            gradient2.addColorStop(1, 'rgba(54, 162, 235, 0.2)');
+
+            var gradient3 = ctx2.createLinearGradient(0, 0, 0, 400);
+            gradient3.addColorStop(0, 'rgba(255, 206, 86, 0.6)');
+            gradient3.addColorStop(1, 'rgba(255, 206, 86, 0.2)');
+
+            var profileCompletionChart = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Profile Completion (%)',
+                        data: data,
+                        backgroundColor: [gradient1, gradient2, gradient3],
+                        borderColor: ['rgba(0, 0, 0, 0.1)'],
+                        borderWidth: 1,
+                        hoverBorderColor: ['rgba(0, 0, 0, 0.2)']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#333',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw + '%';
+                                }
+                            },
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(0, 0, 0, 0.5)',
+                            borderWidth: 1
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            bottom: 10
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#333'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#333'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Completion (%)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Summary Information Calculation for Profile Completion
+            var totalVendors = labels.length;
+            var completedProfiles = data.filter(value => value > 0).length; // Assuming non-zero values indicate completion
+            var incompleteProfiles = totalVendors - completedProfiles;
+
+            // Update the summary information in HTML
+            document.getElementById('profile-total-count').textContent = totalVendors;
+            document.getElementById('completed-profile-count').textContent = completedProfiles;
+            document.getElementById('incomplete-profile-count').textContent = incompleteProfiles;
+        });
+    </script>
+
+
+
+    </div>
+</div>

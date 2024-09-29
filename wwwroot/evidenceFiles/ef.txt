@@ -1,0 +1,13 @@
+Scaffold-DbContext "Server=DESKTOP-68GQKG3;Database=NewData;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+
+
+
+
+
+
+
+
+Add-Migration InitialCreate
+Update-Database
+
+

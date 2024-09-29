@@ -1,0 +1,70 @@
+﻿@model IEnumerable<NBE_Project.Models.SecurityAssurance>
+
+@{
+    ViewData["Title"] = "LowIndex";
+    Layout = "_Layout";
+}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">Security Assurances </h2>
+        </div>
+        <div class="card-body">
+
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Vendor</th> 
+                        <th>Vendor Category</th>
+              @*           <th>SOC Report </th> *@
+                        <th>SOC Report Expiration Date</th>
+                        <th>Security Questionnaire</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@(item.ThirdParty != null ? item.ThirdParty.VendorName : "No Vendor")</td>
+                            <td>@item.VendorCategory</td>
+                         @*  <td>
+                                @if (!string.IsNullOrEmpty(item.SOCReportFileName))
+                                {
+                                    @item.SOCReportFileName
+                                }
+                                else
+                                {
+                                    <span>There is no file available</span>
+                                }
+                            </td>   *@
+                            <td>
+                                    @if (item.SOCReportExpirationDate.HasValue)
+                                    {
+                                        @item.SOCReportExpirationDate.Value.ToString("MM/dd/yyyy") <!-- Adjust date format as needed -->
+                                    }
+                                    else
+                                    {
+                                    <span>No expiration date available</span>
+                                    }
+                            </td>
+                            <td>
+                                @if (item.VendorCategory == "High")
+                                {
+                                    <a asp-controller="Questionare" asp-action="Answer" asp-route-vendorId="@item.ThirdPartyId" class="btn btn-primary btn-sm">
+                                        <i class="mdi mdi-check"></i> Answers
+                                    </a>
+                                }
+                            </td>
+
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <a class="btn btn-secondary" href="@Url.Action("Index")">Back</a>
+        </div>
+    </div>
+</div>

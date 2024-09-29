@@ -1,0 +1,139 @@
+﻿@model ThirdPartyDto
+@{
+    ViewBag.Title = "Vendor Details";
+    Layout = "_Layout";
+}
+<style>
+    .custom-purple-btn {
+        background-color: #b66dff;
+        border-color: #b66dff;
+        color: #fff;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .form-control-plaintext {
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .card-header {
+        background-color: #343a40; /* Retained original dark color */
+    }
+
+    .btn-custom {
+        background-color: #b66dff; /* Retained original purple color */
+        border-color: #b66dff;
+        color: #fff;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header text-white text-center">
+            <h2 class="mb-0">Vendor Details</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="form-label">Vendor Name</label>
+                        <p class="form-control-plaintext">@Model.VendorId </p>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="form-label">Company</label>
+                        <p class="form-control-plaintext">@Model.Company </p>
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="form-label">Vendor Category</label>
+                        <p class="form-control-plaintext">@Model.VendorCategory </p>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="form-label">Contract File</label>
+                        <p class="form-control-plaintext">
+                            @if (!string.IsNullOrEmpty(Model.ContractName))
+                            {
+                                <a href="@Model.ContractName" download>
+                                    <i class="fas fa-file-download"></i> Download Contract
+                                </a>
+                            }
+                            else
+                            {
+                                <span>No Contract Available</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="form-label">Contact Title</label>
+                        <p class="form-control-plaintext">@Model.ContactTitle</p>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="form-label">Contract’s Start Date</label>
+                        <p class="form-control-plaintext">@Model.ContractStartDate.ToString("yyyy-MM-dd") </p>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="form-label">Contact Number</label>
+                        <p class="form-control-plaintext">@Model.ContactNumber.ToString() </p>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="form-label">Contract’s End Date</label>
+                        <p class="form-control-plaintext">@Model.ContractEndDate.ToString("yyyy-MM-dd") </p>
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <p class="form-control-plaintext">@Model.Email </p>
+                    </div>
+                </div>
+             
+              
+               
+            </div>
+            <div class="text-center mt-4">
+                <a asp-action="Index" asp-controller="ThirdParty" class="btn btn-custom">Back to Vendors List</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+﻿@model NBE_Project.ViewModels.ChangeRequestVM
+
+@{
+    ViewData["Title"] = "Change Request Details";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">Change Request Details</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h4>Change Request Information</h4>
+                    <p><strong>Change Description:</strong> @Model.Changes</p>
+                    <p><strong>Status:</strong> @Model.Status</p>
+                    <p><strong>Change Schedule Date:</strong> @Model.ScheduledDate.ToString("d")</p>
+                    <p><strong>Comment:</strong> @Model.Comment</p>
+                    <p><strong>Change Severity:</strong> @Model.ChangeSeverity</p>
+                </div>
+
+                <div class="col-md-6">
+                    <h4>Vendor Information</h4>
+                    <p><strong>Vendor Name:</strong> @Model.VendorName</p>
+                    <p><strong>Vendor Category:</strong> @Model.VendorCategory</p>
+                    <p><strong>Company:</strong> @Model.Company</p>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a asp-action="Index" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-header {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .btn-primary {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border-radius: 0.25rem;
+    }
+
+    h4 {
+        margin-bottom: 1rem;
+    }
+
+    .container {
+        max-width: 1200px;
+    }
+</style>

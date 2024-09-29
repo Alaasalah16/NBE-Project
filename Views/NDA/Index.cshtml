@@ -1,0 +1,238 @@
+﻿@model IEnumerable<NBE_Project.ViewModels.NDAViewModel>
+
+@{
+    ViewData["Title"] = "NDAs";
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="container mt-5">
+    <!-- NDA Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">NDAs</h2>
+        </div>
+        <div class="card-body">
+            <!-- Summary Information -->
+            <div class="row mb-3">
+                <div class="col-lg d-flex justify-content-between">
+                    <div class="alert alert-info mb-0 flex-fill text-center">
+                        <strong>Total NDAs:</strong> @Model.Count()
+                    </div>
+                    <div class="alert alert-success mb-0 flex-fill text-center">
+                        <strong>Active NDAs:</strong> @Model.Count(nda => nda.NDAEndDate >= DateTime.Now)
+                    </div>
+                    <div class="alert alert-danger mb-0 flex-fill text-center">
+                        <strong>Expired NDAs:</strong> @Model.Count(nda => nda.NDAEndDate < DateTime.Now)
+                    </div>
+                </div>
+            </div>
+            <!-- Search by Vendor Name -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <input type="text" id="searchVendor" class="form-control" placeholder="Search Vendor by Name">
+                </div>
+                <!-- Export Button -->
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-primary" onclick="exportTableToCSV('nda_export.csv')">Export</button>
+                </div>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>NDA File</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Duration (Years)</th>
+                        <th>Owner Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ndaTableBody">
+                    @foreach (var nda in Model)
+                    {
+                        <tr class="@(nda.NDAEndDate < DateTime.Now ? "expired-row" : "")">
+                            <td>@nda.VendorName</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(nda.FileName))
+                                {
+                                    <a href="@Url.Content($"~/Uploads/{nda.FileName}")" download class="btn btn-sm btn-outline-info" title="Download">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>No File Available</span>
+                                }
+                            </td>
+                            <td>@nda.NDAStartDate.ToString("d")</td>
+                            <td>@nda.NDAEndDate.ToString("d")</td>
+                            <td>@(nda.NDAEndDate < DateTime.Now ? "Expired" : "Active")</td>
+                            <td>@(nda.DurationInYears.HasValue ? nda.DurationInYears.Value.ToString("0.##") : "N/A")</td>
+                            <td class="owner-type">
+                                <div class="d-flex">
+                                    <button class="btn btn-sm me-2 btn-outline-primary btn-owner" data-owner-type="IT Owner" data-nda-id="@nda.Id" onclick="updateOwnerType('IT Owner', '@nda.Id')">IT</button>
+                                    <button class="btn btn-sm btn-outline-primary btn-owner" data-owner-type="Business Owner" data-nda-id="@nda.Id" onclick="updateOwnerType('Business Owner', '@nda.Id')">Business</button>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details", new { id = nda.Id })" class="btn btn-sm btn-primary" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            function updateOwnerType(ownerType, ndaId) {
+                fetch('@Url.Action("UpdateOwnerType", "NDA")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
+                    body: JSON.stringify({ id: ndaId, ownerType: ownerType })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: `Owner type has been successfully updated to ${ownerType}.`,
+                                icon: 'success',
+                                confirmButtonText: 'Great!',
+                                timer: 3000 // Optional: auto-hide the alert after 3 seconds
+                            }).then(() => {
+                                // Refresh the UI to reflect changes
+                                refreshOwnerTypeUI(ndaId, ownerType);
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Update Failed',
+                                text: `There was an issue updating the owner type: ${data.message}.`,
+                                icon: 'error',
+                                confirmButtonText: 'Try Again'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            title: 'Network Error',
+                            text: `Unable to update owner type due to a network error: ${error.message}.`,
+                            icon: 'error',
+                            confirmButtonText: 'Close'
+                        });
+                        console.error('Error:', error);
+                    });
+            }
+
+            function refreshOwnerTypeUI(ndaId, ownerType) {
+                const buttons = document.querySelectorAll(`button[data-nda-id="${ndaId}"]`);
+                buttons.forEach(button => {
+                    if (button.dataset.ownerType === ownerType) {
+                        button.classList.add('btn-primary');
+                        button.classList.remove('btn-outline-primary');
+                    } else {
+                        button.classList.add('btn-outline-primary');
+                        button.classList.remove('btn-primary');
+                    }
+                });
+            }
+
+            const filterTable = () => {
+                const vendorSearch = document.getElementById('searchVendor').value.toLowerCase();
+                document.querySelectorAll('#ndaTableBody tr').forEach(row => {
+                    const vendorName = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+                    row.style.display = vendorName.includes(vendorSearch) ? '' : 'none';
+                });
+            };
+
+            document.getElementById('searchVendor').addEventListener('input', filterTable);
+        });
+
+        function downloadCSV(csv, filename) {
+            var csvFile;
+            var downloadLink;
+
+            csvFile = new Blob([csv], { type: "text/csv" });
+            downloadLink = document.createElement("a");
+            downloadLink.download = filename;
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+        function exportTableToCSV(filename) {
+            var csv = [];
+            var rows = document.querySelectorAll("#ndaTableBody tr");
+
+            var headers = document.querySelectorAll("#ndaTable thead th");
+            var headerRow = [];
+            headers.forEach(th => {
+                headerRow.push('"' + th.innerText.replace(/"/g, '""') + '"');
+            });
+            csv.push(headerRow.join(","));
+
+            rows.forEach(row => {
+                var rowData = [];
+                row.querySelectorAll("td").forEach(td => {
+                    if (td.querySelector("a")) {
+                        rowData.push('"' + td.querySelector("a").innerText.replace(/"/g, '""') + '"');
+                    } else {
+                        rowData.push('"' + td.innerText.replace(/"/g, '""') + '"');
+                    }
+                });
+                csv.push(rowData.join(","));
+            });
+
+            downloadCSV(csv.join("\n"), filename);
+        }
+    </script>
+}
+
+
+
+<style>
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .expired-row {
+        background-color: #f8d7da !important;
+    }
+
+    .table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+
+    .btn-group .btn {
+        border-radius: 0;
+    }
+
+        .btn-group .btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+</style>

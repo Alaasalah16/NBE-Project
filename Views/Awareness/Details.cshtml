@@ -1,0 +1,60 @@
+﻿@model NBE_Project.Models.Awareness
+
+@{
+    ViewData["Title"] = "Awareness Details";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Awareness Details</h2>
+        </div>
+        <div class="card-body">
+            <!-- Awareness Information -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h4>Awareness Information</h4>
+                    <p><strong>Message:</strong> @Model.Message</p>
+                    <p>
+                        <strong>File:</strong>
+                        @if (!string.IsNullOrEmpty(Model.FileName))
+                        {
+                            <a href="@Url.Content($"~/files/{Model.FileName}")" download>
+                                @Model.FileName
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No file attached</span>
+                        }
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <h4>Vendor Information</h4>
+                    <p>
+                        <strong>Third Party Name:</strong>
+                        @if (Model.ThirdParty != null)
+                        {
+                            @Model.ThirdParty.VendorName
+                        }
+                        else
+                        {
+                            <span class="text-muted">No third party</span>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <!-- Back to List Button -->
+            <div class="text-center">
+                <a asp-action="Index" class="btn btn-primary btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">

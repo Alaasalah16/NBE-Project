@@ -1,0 +1,150 @@
+﻿@model IEnumerable<NBE_Project.Models.Awareness>
+
+@{
+    ViewBag.Title = "Awareness Messages";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- Anime.js for animations -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-light">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Awareness Messages and Tips</h2>
+        </div>
+
+        <!-- Card for raising awareness message with icon -->
+        <div class="card-body">
+            <div class="col">
+                <div class="card border-success shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="d-flex justify-content-center align-items-center mb-3">
+                            <i id="bellIcon" class="fas fa-bell fa-4x" style="color: gold;"></i>
+                        </div>
+                        <h4 class="card-title mb-3">Raise Awareness Message</h4>
+                        <a asp-action="Create" class="btn btn-primary mt-2">
+                            <i class="fas fa-plus"></i> Add New
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Animate the bell icon with anime.js -->
+            <script>
+                anime({
+                    targets: '#bellIcon',
+                    keyframes: [
+                        { translateX: -10, duration: 100 },
+                        { translateX: 10, duration: 100 },
+                        { translateX: -10, duration: 100 },
+                        { translateX: 10, duration: 100 },
+                        { translateX: 0, duration: 100 }
+                    ],
+                    easing: 'easeInOutSine',
+                    loop: true,
+                    delay: 1000
+                });
+            </script>
+
+            <!-- Table for listing awareness messages -->
+            <div class="table-responsive mt-4">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="truncate">Vendor Id</th>
+                            <th class="truncate">Vendor</th>
+                            <th class="truncate">Message</th>
+                          @*   <th class="truncate">File</th> *@
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var awareness in Model)
+                        {
+                            <tr>
+                                <td class="truncate" title="@awareness.ThirdPartyId">@awareness.ThirdPartyId</td> <!-- Display ThirdPartyId -->
+                                <td class="truncate" title="@awareness.ThirdParty?.VendorName">
+                                    @if (awareness.ThirdParty != null)
+                                    {
+                                        @awareness.ThirdParty.VendorName <!-- Display ThirdParty name -->
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">All Third Parties</span>
+                                    }
+                                </td>
+                                <td class="truncate" title="@awareness.Message">@awareness.Message</td>
+                             @*    <td class="truncate">
+                                    @if (!string.IsNullOrEmpty(awareness.FileName))
+                                    {
+                                        <a href="@Url.Content($"~/files/{awareness.FileName}")" download class="btn btn-success btn-sm">
+                                            <i class="fas fa-file-download"></i> Download
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No file</span>
+                                    }
+                                </td> *@
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@awareness.Id" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye"></i> 
+                                    </a>
+
+                                    <a asp-action="Delete" asp-route-id="@awareness.Id" class="btn btn-danger btn-sm ml-2"
+                                       onclick="return confirm('Are you sure you want to delete this awareness message?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Summary Information -->
+            <div class="col mt-4">
+                <div class="alert alert-info text-center mb-0">
+                    <h4 class="alert-heading mb-2">Total Messages</h4>
+                    <p class="card-text mb-0" id="totalMessages">@Model.Count()</p>
+                </div>
+            </div>
+
+            <!-- Animate the total messages count -->
+            <script>
+                anime({
+                    targets: '#totalMessages',
+                    scale: [1, 1.2, 1],
+                    duration: 1000,
+                    easing: 'easeInOutSine',
+                    loop: true
+                });
+            </script>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* CSS for text truncation */
+    .table td.truncate, .table th.truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px; /* Adjust as needed */
+    }
+
+        .table td.truncate:hover, .table th.truncate:hover {
+            overflow: visible;
+            white-space: normal;
+        }
+</style>
+

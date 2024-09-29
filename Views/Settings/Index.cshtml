@@ -1,0 +1,92 @@
+﻿@model NBE_Project.ViewModels.SettingsViewModel
+
+@{
+    ViewBag.Title = "Settings";
+    Layout = "_Layout";
+}
+
+<!-- Include custom styles or a CDN for additional styling -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="container mt-5">
+
+    <!-- Page Title -->
+    <div class="text-center mb-4">
+        <h2 class="display-4">Settings</h2>
+        <p class="lead">Customize your application settings</p>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="row mb-4">
+        <div class="col-lg-6 col-md-12 mb-3">
+            <a href="@Url.Action("Index", "Guest")" class="list-group-item list-group-item-action d-flex align-items-center bg-light shadow-sm">
+                <i class="fas fa-users fa-lg me-3"></i>
+                <span>Guest List</span>
+            </a>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <a href="@Url.Action("Index", "Role")" class="list-group-item list-group-item-action d-flex align-items-center bg-light shadow-sm">
+                <i class="fas fa-user-tag fa-lg me-3"></i>
+                <span>Role List</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Settings Form -->
+    <form asp-action="SaveSettings" method="post" class="bg-light p-4 rounded shadow-sm">
+        <h4 class="mb-3">General Settings</h4>
+
+        <!-- Theme Selection -->
+        <div class="form-group mb-3">
+            <label for="Theme" class="form-label">Theme</label>
+            <select asp-for="Theme" class="form-control">
+                <option value="">Select Theme</option>
+                <option value="Light">Light</option>
+                <!-- Add more themes if available -->
+            </select>
+        </div>
+
+        <!-- Language Selection -->
+        <div class="form-group mb-3">
+            <label for="Language" class="form-label">Language</label>
+            <select asp-for="Language" class="form-control">
+                <option value="">Select Language</option>
+                <option value="en">English</option>
+                <!-- Add more languages if available -->
+            </select>
+        </div>
+
+        <!-- Additional Settings (Optional) -->
+        @* Uncomment and adjust according to requirements *@
+        <!--
+        <div class="form-group mb-3">
+            <label for="NotificationsEnabled" class="form-label">Enable Notifications</label>
+            <input type="checkbox" asp-for="NotificationsEnabled" class="form-check-input" />
+        </div>
+        <div class="form-group mb-3">
+            <label for="TwoFactorAuthEnabled" class="form-label">Enable Two-Factor Authentication</label>
+            <input type="checkbox" asp-for="TwoFactorAuthEnabled" class="form-check-input" />
+        </div>
+        <div class="form-group mb-3">
+            <label for="DatabaseConnectionString" class="form-label">Database Connection String</label>
+            <input type="text" asp-for="DatabaseConnectionString" class="form-control" />
+        </div>
+        <div class="form-group mb-3">
+            <label for="ApiEndpoint" class="form-label">API Endpoint</label>
+            <input type="text" asp-for="ApiEndpoint" class="form-control" />
+        </div>
+        <div class="form-group mb-3">
+            <label for="ComplianceThreshold" class="form-label">Compliance Threshold</label>
+            <input type="text" asp-for="ComplianceThreshold" class="form-control" />
+        </div>
+        -->
+        <!-- Save Button -->
+        <button type="submit" class="btn btn-primary btn-lg mt-3">
+            <i class="fas fa-save me-2"></i>
+            Save Settings
+        </button>
+    </form>
+</div>
+
+<!-- Optional JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

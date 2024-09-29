@@ -1,0 +1,106 @@
+﻿@model NBE_Project.Models.RegulationCompliance
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">Regulation Details</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <h4>Regulation Name: @Model.RegulationName</h4>
+
+                    <p><strong>Compliance Date:</strong> @Model.ComplianceDate.ToString("MMMM dd, yyyy")</p>
+                    <p><strong>Comments:</strong> @(string.IsNullOrEmpty(Model.Comments) ? "No comments provided." : Model.Comments)</p>
+                </div>
+            </div>
+
+            <h4>Clauses</h4>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Clause Name</th>
+                            <th>Requirements</th>
+                            <th>Compilation Status</th>
+                            <th>Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Clauses.Any())
+                        {
+                            foreach (var clause in Model.Clauses)
+                            {
+                                <tr>
+                                    <td>@clause.ClauseName</td>
+                                    <td>@clause.Requirements</td>
+                                    <td>
+                                        @if (clause.CompilationStatus == "Compiled")
+                                        {
+                                            <span class="badge bg-success">Compiled</span>
+                                        }
+                                        else if (clause.CompilationStatus == "Partially Compiled")
+                                        {
+                                            <span class="badge bg-warning">Partially Compiled</span>
+                                        }
+                                        else if (clause.CompilationStatus == "Non-Compiled")
+                                        {
+                                            <span class="badge bg-danger">Non-Compiled</span>
+                                        }
+                                    </td>
+                                    <td>@(string.IsNullOrEmpty(clause.Comments) ? "No comments." : clause.Comments)</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center">No clauses available for this regulation.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Vendor Feedback Section -->
+            <h4 class="mt-4">Vendor Feedback and Compilation Status</h4>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <p><strong>Feedback:</strong> @(string.IsNullOrEmpty(Model.Feedback) ? "No feedback provided." : Model.Feedback)</p>
+                    <p>
+                        <strong>Overall Compilation Status:</strong>
+                        @if (Model.CompilationStatus == "Compiled")
+                        {
+                            <span class="badge bg-success">Compiled</span>
+                        }
+                        else if (Model.CompilationStatus == "Partially Compiled")
+                        {
+                            <span class="badge bg-warning">Partially Compiled</span>
+                        }
+                        else if (Model.CompilationStatus == "Non-Compiled")
+                        {
+                            <span class="badge bg-danger">Non-Compiled</span>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a asp-action="Index" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+<!-- Bootstrap -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">

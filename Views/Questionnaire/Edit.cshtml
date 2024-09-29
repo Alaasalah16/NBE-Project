@@ -1,0 +1,45 @@
+﻿@model NBE_Project.ViewModels.AnswerDTO
+
+@{
+    ViewData["Title"] = "View All Questions and Answers";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">View All Questions and Answers</h2>
+        </div>
+        <div class="card-body">
+            @if (Model?.Questions != null && Model.Questions.Count > 0)
+            {
+                <form method="post">
+                    <div id="questions-container">
+                        @for (int i = 0; i < Model.Questions.Count; i++)
+                        {
+                            <div class="form-group mb-3">
+                                <label class="form-label">Question @(i + 1)</label>
+                                <input type="text" class="form-control" value="@Model.Questions[i].Text" readonly />
+
+                                <label class="form-label mt-2">Answer</label>
+                                <input type="text" class="form-control" value="@Model.Questions[i].Answer" readonly />
+                            </div>
+                        }
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <div class="d-flex justify-content-center">
+                                <a class="btn btn-primary w-100 w-sm-auto mx-2" asp-controller="SecurityAssurance" asp-action="HighIndex" role="button">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <p class="text-center">No questions available.</p>
+            }
+        </div>
+    </div>
+</div>

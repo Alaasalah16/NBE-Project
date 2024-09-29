@@ -1,0 +1,197 @@
+﻿@model NBE_Project.ViewModels.RegulationComplianceVM
+
+@{
+    Layout = "_Layout";
+}
+
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+<!-- Google Font -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded">
+        <div class="card-header bg-gradient-primary text-white text-center">
+            <h2 class="mb-0">Add Regulation Compliance</h2>
+        </div>
+        <div class="card-body">
+            <form id="regulationForm" asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="ThirdPartyId" class="control-label">Third Party Vendor</label>
+                    <select asp-for="ThirdPartyId" class="form-control custom-select">
+                        <option value="">Select Vendor</option>
+                        @foreach (var item in Model.ThirdPartyList)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ThirdPartyId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row mb-4">
+                    <div class="col-md-6">
+                        <label asp-for="RegulationName" class="control-label">Regulation Name</label>
+                        <input asp-for="RegulationName" class="form-control custom-input" />
+                        <span asp-validation-for="RegulationName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ComplianceDate" class="control-label">Compliance Date</label>
+                        <input type="date" asp-for="ComplianceDate" class="form-control custom-input" />
+                        <span asp-validation-for="ComplianceDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="form-group mb-4">
+                    <label asp-for="Comments" class="control-label">Comments</label>
+                    <textarea asp-for="Comments" class="form-control custom-textarea"></textarea>
+                    <span asp-validation-for="Comments" class="text-danger"></span>
+                </div>
+
+                <div id="clausesContainer" class="mb-4">
+                    <h4>Clauses</h4>
+                    <div id="clauses-list">
+                        @for (var i = 0; i < Model.Clauses.Count; i++)
+                        {
+                            <div class="clause-item mb-3 p-3 border rounded shadow-sm">
+                                <label>Clause Name</label>
+                                <input asp-for="Clauses[i].ClauseName" class="form-control mb-2" />
+
+                                <label>Requirements</label>
+                                <textarea asp-for="Clauses[i].Requirements" class="form-control mb-2"></textarea>
+
+                                <label>Compilation Status</label>
+                                <small class="form-text text-muted">Options: Compiled, Partially Compiled, Non-Compiled</small>
+                                <input asp-for="Clauses[i].CompilationStatus" class="form-control mb-2" />
+
+                                <label>Comments</label>
+                                <textarea asp-for="Clauses[i].Comments" class="form-control"></textarea>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary mb-3" onclick="addClause()">+ Add Clause</button>
+
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary mx-2 btn-lg">Save</button>
+                            <a class="btn btn-outline-primary mx-2 btn-lg" asp-controller="RegulationCompliance" asp-action="Index" role="button">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function addClause() {
+            var clauseList = document.getElementById('clauses-list');
+            var index = clauseList.children.length;
+
+            var clauseTemplate = `
+                    <div class="clause-item mb-3 p-3 border rounded shadow-sm" id="clause-${index}">
+                        <label>Clause Name</label>
+                        <input name="Clauses[${index}].ClauseName" class="form-control mb-2" />
+
+                        <label>Requirements</label>
+                        <textarea name="Clauses[${index}].Requirements" class="form-control mb-2"></textarea>
+
+                        <label>Compilation Status</label>
+                        <small class="form-text text-muted">Options: Compiled, Partially Compiled, Non-Compiled</small>
+                        <input name="Clauses[${index}].CompilationStatus" class="form-control mb-2" />
+
+                        <label>Comments</label>
+                        <textarea name="Clauses[${index}].Comments" class="form-control mb-2"></textarea>
+
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeClause(${index})">Remove</button>
+                    </div>
+                `;
+
+            clauseList.insertAdjacentHTML('beforeend', clauseTemplate);
+        }
+
+        function removeClause(index) {
+            var clause = document.getElementById(`clause-${index}`);
+            if (clause) {
+                clause.remove();
+            }
+        }
+
+        document.getElementById('regulationForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'success',
+                title: 'Saved!',
+                text: 'Regulation Compliance has been saved successfully.',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit();  // Explicitly submit the form after confirmation
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa; /* Light background color */
+    }
+
+    .card {
+        border-radius: 15px;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(to right, #007bff, #00d2ff);
+    }
+
+    .custom-select, .custom-input, .custom-textarea {
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+        transition: all 0.3s ease;
+    }
+
+        .custom-select:focus, .custom-input:focus, .custom-textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+        }
+
+    .btn-primary {
+        border-radius: 25px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+
+    
+
+    .btn-outline-primary {
+        border-radius: 25px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+
+       
+
+    .btn-lg {
+        font-size: 1.25rem; /* Larger text size */
+        padding: 0.75rem 1.5rem; /* Increased padding for larger buttons */
+        border-radius: 25px; /* Rounded corners */
+    }
+
+    .clause-item {
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>

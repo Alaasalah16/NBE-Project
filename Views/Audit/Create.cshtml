@@ -1,0 +1,109 @@
+﻿@model NBE_Project.Models.Audit
+
+@{
+    ViewBag.Title = "Onsite NBE Audit Mission";
+    Layout = "_Layout3";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Onsite NBE Audit Mission</h2>
+        </div>
+        <div class="card-body d-flex flex-column">
+            <form id="auditForm" asp-action="Create" method="post" enctype="multipart/form-data" >
+
+              @*   <div class="form-group mb-4">
+                    <label for="ThirdPartyId" class="control-label">Third Party Vendor</label>
+                    <select id="ThirdPartyId" name="ThirdPartyId" class="form-control custom-select">
+                        <option value="">Select Vendor</option>
+                        @if (ViewBag.ThirdPartyList != null)
+                        {
+                            @foreach (var item in ViewBag.ThirdPartyList as IEnumerable<SelectListItem>)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                        <option value="all">Select All Vendors</option>
+                    </select>
+                    <span asp-validation-for="ThirdPartyId" class="text-danger"></span>
+
+                </div> *@
+
+                <div class="form-group ">
+                    <label asp-for="FindingsName" class="form-label fw-bold">Findings Name</label>
+                    <textarea asp-for="FindingsName" class="form-control grey-text-field" rows="4" placeholder="Enter findings name here..."></textarea>
+                    <span asp-validation-for="FindingsName" class="text-danger"></span>
+                </div>
+
+               
+
+                <div class="form-group row mb-4">
+                    <div class="col-md-6">
+                        <label asp-for="FindingsDate" class="form-label fw-bold">Findings Date</label>
+                        <input asp-for="FindingsDate" type="datetime-local" class="form-control grey-text-field" />
+                        <span asp-validation-for="FindingsDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label fw-bold">Status</label>
+                        <input asp-for="Status" class="form-control grey-text-field" />
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="evidenceFile">Evidence File:</label>
+                    <input type="file" class="form-control grey-text-field" id="evidenceFile" name="evidenceFile" />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="ActionTaken" class="form-label fw-bold">Action Taken</label>
+                    <textarea asp-for="ActionTaken" class="form-control grey-text-field" rows="4" placeholder="Describe the actions taken..."></textarea>
+                    <span asp-validation-for="ActionTaken" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="Comment" class="form-label fw-bold">Comment</label>
+                    <textarea asp-for="Comment" class="form-control grey-text-field" rows="4" placeholder="Add any additional comments..."></textarea>
+                    <span asp-validation-for="Comment" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-custom-green w-100 w-sm-auto mx-2">Submit</button>
+                            <a href="@Url.Action("Index", "VendorHome")" class="btn btn-secondary w-100 w-sm-auto mx-2">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Custom JavaScript for SweetAlert2 -->
+<script>
+    document.getElementById('auditForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to submit this audit mission?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, submit it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.submit(); // Submit the form if confirmed
+            }
+        });
+    });
+</script>
+
+
+
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>

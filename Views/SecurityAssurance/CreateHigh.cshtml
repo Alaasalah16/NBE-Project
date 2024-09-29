@@ -1,0 +1,55 @@
+﻿@model NBE_Project.ViewModels.SecurityAssuranceVM
+
+@{
+    ViewData["Title"] = "Security Assurance";
+    Layout = "_Layout3";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Security Assurance</h2>
+        </div>
+        <div class="card-body">
+            <form id="securityAssuranceForm" asp-action="CreateHigh" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+              
+                <div class="text-left mt-4">
+                    <h4>Security Questionnaire</h4>
+                    <p>To complete the security questionnaire, please <a asp-controller="Questionnaire" asp-action="Answer" class="text-primary font-weight-bold">Click here</a>.</p>
+                </div>
+                <div class="text-left mt-4">
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-custom-green w-100 w-sm-auto mx-2">Submit</button>
+                        <a asp-controller="VendorHome" asp-action="Index" class="btn btn-secondary w-100 w-sm-auto mx-2">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to submit this security assurance form?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, submit it!',
+                cancelButtonText: 'No, cancel!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form if confirmed
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>

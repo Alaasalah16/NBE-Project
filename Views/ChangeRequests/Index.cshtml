@@ -1,0 +1,260 @@
+﻿@model IEnumerable<NBE_Project.ViewModels.ChangeRequestVM>
+
+@{
+    ViewData["Title"] = "Change Requests";
+    Layout = "_Layout";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- SweetAlert2 CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">Change Requests</h2>
+        </div>
+        <div class="card-body">
+            <!-- Search Input -->
+            <div class="mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search..." oninput="filterTable()">
+                <small class="form-text text-muted">Search by vendor name, change description, status, comment, or change severity.</small>
+            </div>
+
+            <!-- Export Button -->
+            <div class="mb-3 text-end">
+                <button class="btn btn-primary" onclick="exportTableToCSV('change_requests.csv')">Export</button>
+            </div>
+
+            <!-- Table -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="truncate" onclick="sortTable(0)">Vendor</th>
+                        <th class="truncate" onclick="sortTable(1)">Change Description</th>
+                        <th onclick="sortTable(2)">Status</th>
+                        <th onclick="sortTable(3)">Change Schedule Date</th>
+                       @*  <th class="truncate" onclick="sortTable(4)">Comment</th> *@
+                        <th onclick="sortTable(5)">Change Severity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var request in Model)
+                    {
+                        <tr data-request-id="@request.Id">
+                            <td class="truncate">@request.VendorName</td>
+                            <td class="truncate">@request.Changes</td>
+                            <td>@request.Status</td>
+                            <td>@request.ScheduledDate.ToString("d")</td>
+                           @*  <td class="truncate">@request.Comment</td> *@
+                            <td>
+                                <div class="d-flex">
+                                    <button class="btn btn-sm me-2 btn-outline-success btn-severity" data-severity="Low" onclick="updateSeverity('Low', '@request.Id')">Low</button>
+                                    <button class="btn btn-sm me-2 btn-outline-warning btn-severity" data-severity="Medium" onclick="updateSeverity('Medium', '@request.Id')">Medium</button>
+                                    <button class="btn btn-sm btn-outline-danger btn-severity" data-severity="High" onclick="updateSeverity('High', '@request.Id')">High</button>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details", new { id = request.Id })" class="btn btn-primary btn-sm" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Summary Information -->
+            <div class="mb-3">
+                <p>Total Requests: @Model.Count()</p>
+            </div>
+
+            <!-- Add New Button -->
+            <!-- Uncomment if needed -->
+            <!--
+            <div class="form-group text-center mt-auto">
+                <a asp-action="Create" class="btn btn-custom-green">Add New</a>
+            </div>
+            -->
+        </div>
+    </div>
+</div>
+
+<style>
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* CSS for text truncation */
+    .table td.truncate, .table th.truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px; /* Adjust as needed */
+    }
+</style>
+
+<script>
+    function updateSeverity(severity, requestId) {
+        fetch('@Url.Action("UpdateSeverity", "ChangeRequests")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: requestId, changeSeverity: severity })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Severity Level Changed',
+                        text: `The severity level is now set to ${severity}.`,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Refresh the UI to reflect changes
+                        refreshSeverityUI(requestId, severity);
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: `There was an error updating the severity level: ${data.message}`,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: 'Error',
+                    text: `There was an error updating the severity level: ${error.message}`,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                console.error('Error:', error);
+            });
+    }
+
+    function refreshSeverityUI(requestId, severity) {
+        // Select the row containing the given requestId
+        const row = document.querySelector(`tr[data-request-id="${requestId}"]`);
+        if (row) {
+            // Find all buttons in the severity column
+            const buttons = row.querySelectorAll('.btn-severity');
+
+            buttons.forEach(button => {
+                // Remove all severity styles
+                button.classList.remove('btn-success', 'btn-warning', 'btn-danger');
+                button.classList.add('btn-outline-success', 'btn-outline-warning', 'btn-outline-danger');
+            });
+
+            // Apply the correct style based on the new severity level
+            const severityButton = row.querySelector(`button[data-severity="${severity}"]`);
+            if (severityButton) {
+                severityButton.classList.remove('btn-outline-success', 'btn-outline-warning', 'btn-outline-danger');
+                switch (severity) {
+                    case 'Low':
+                        severityButton.classList.add('btn-success');
+                        break;
+                    case 'Medium':
+                        severityButton.classList.add('btn-warning');
+                        break;
+                    case 'High':
+                        severityButton.classList.add('btn-danger');
+                        break;
+                }
+            }
+        }
+    }
+
+    function filterTable() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cells = row.getElementsByTagName('td');
+            let found = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(input));
+            row.style.display = found ? '' : 'none';
+        });
+    }
+
+    function sortTable(n) {
+        const table = document.querySelector('table');
+        let switching = true;
+        let dir = "asc";
+        let switchCount = 0;
+
+        while (switching) {
+            switching = false;
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            for (let i = 0; i < rows.length - 1; i++) {
+                let shouldSwitch = false;
+                const x = rows[i].getElementsByTagName("TD")[n];
+                const y = rows[i + 1].getElementsByTagName("TD")[n];
+                const xText = x.textContent.trim().toLowerCase();
+                const yText = y.textContent.trim().toLowerCase();
+
+                if (dir === "asc") {
+                    if (xText > yText) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir === "desc") {
+                    if (xText < yText) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchCount++;
+            } else if (switchCount === 0 && dir === "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+
+    function exportTableToCSV(filename) {
+        const csv = [];
+        const rows = document.querySelectorAll('table tr');
+
+        rows.forEach(row => {
+            const cols = row.querySelectorAll('td, th');
+            const csvRow = [];
+            cols.forEach(col => {
+                // Check for button elements to get the severity
+                const buttons = col.querySelectorAll('button');
+                if (buttons.length > 0) {
+                    // If buttons are present, get the text content of the active button
+                    let severity = 'Low'; // Default value
+                    buttons.forEach(button => {
+                        if (button.classList.contains('btn-success')) {
+                            severity = 'Low';
+                        } else if (button.classList.contains('btn-warning')) {
+                            severity = 'Medium';
+                        } else if (button.classList.contains('btn-danger')) {
+                            severity = 'High';
+                        }
+                    });
+                    csvRow.push(severity);
+                } else {
+                    csvRow.push(col.innerText);
+                }
+            });
+            csv.push(csvRow.join(','));
+        });
+
+        const csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
+        const downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+</script>

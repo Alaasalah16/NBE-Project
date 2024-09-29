@@ -1,0 +1,55 @@
+﻿@model NBE_Project.ViewModels.AnswerDTO
+
+@{
+    ViewData["Title"] = "Answer Questionnaire";
+    Layout = "_Layout3";
+}
+
+<!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0 text-center">Answer Security Questionnaire</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="SubmitAnswers" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div id="questions-container">
+                    @if (Model?.Questions != null && Model.Questions.Count > 0)
+                    {
+                        @for (int i = 0; i < Model.Questions.Count; i++)
+                        {
+                            <div class="form-group mb-3" id="question-@i">
+                                <label for="answer-@i" class="form-label">@Model.Questions[i].Text</label>
+                                <input type="hidden" name="Questions[@i].Id" value="@Model.Questions[i].Id" />
+                                <input type="text" id="answer-@i" name="Questions[@i].Answer" class="form-control" placeholder="Enter your answer here" value="@Model.Questions[i].Answer" required />
+                                @Html.ValidationMessageFor(model => model.Questions[i].Answer, "", new { @class = "text-danger" })
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-center">No questions available.</p>
+                    }
+                </div>
+
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary w-100 w-sm-auto mx-2">Submit Answers</button>
+                            <a class="btn btn-outline-primary w-100 w-sm-auto mx-2" asp-controller="SecurityAssurance" asp-action="CreateHigh" role="button">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

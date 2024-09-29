@@ -1,0 +1,77 @@
+﻿@model NBE_Project.ViewModels.SecurityAssuranceVM
+
+@{
+    ViewData["Title"] = "Security Assurance";
+    Layout = "_Layout3";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Security Assurance</h2>
+        </div>
+        <div class="card-body">
+            <form id="securityAssuranceForm" asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <!-- Input field for ThirdPartyId -->
+                <div class="form-group mb-4">
+                    <label for="ThirdPartyId" class="control-label">Enter your Third Party ID:</label>
+                    <input type="number" name="ThirdPartyId" id="ThirdPartyId" class="form-control" required />
+                    <span asp-validation-for="ThirdPartyId" class="text-danger"></span>
+                </div>
+
+                <!-- Hidden VendorCategory field -->
+                <input type="hidden" name="VendorCategory" id="VendorCategory" value="@Model.VendorCategory ?? " " " />
+
+                <!-- SOC Report Fields (hidden by default) -->
+                <div id="additionalData" style="display:none;">
+                    <div class="form-group">
+                        <label for="SOCType2Report">SOC Type 2 Report</label>
+                        <input type="file" name="SOCType2Report" class="form-control grey-text-field" id="SOCType2Report" />
+                        <span asp-validation-for="SOCType2Report" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="SOCReportExpirationDate">SOC Type 2 Report Expiration Date</label>
+                        <input type="date" name="SOCReportExpirationDate" class="form-control grey-text-field" id="SOCReportExpirationDate" />
+                    </div>
+                </div>
+
+                <div class="text-left mt-4">
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-custom-green w-100 w-sm-auto mx-2">Submit</button>
+                        <a asp-controller="VendorHome" asp-action="Index" class="btn btn-secondary w-100 w-sm-auto mx-2">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Fetch VendorCategory based on ThirdPartyId
+            $('#ThirdPartyId').on('change', function () {
+                var thirdPartyId = $(this).val();
+                if (thirdPartyId) {
+                    // Make an AJAX call to fetch VendorCategory
+                    $.getJSON('@Url.Action("GetVendorCategory", "SecurityAssurance")', { thirdPartyId: thirdPartyId }, function (data) {
+                        $('#VendorCategory').val(data.vendorCategory);
+
+                        // Show or hide the additional fields based on the VendorCategory
+                        if (data.vendorCategory === 'Low' || data.vendorCategory === 'Medium') {
+                            $('#additionalData').show();
+                        } else {
+                            $('#additionalData').hide();
+                        }
+                    });
+                } else {
+                    $('#VendorCategory').val('');
+                    $('#additionalData').hide();
+                }
+            });
+        });
+    </script>
+}

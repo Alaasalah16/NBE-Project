@@ -1,0 +1,378 @@
+﻿@model NBE_Project.ViewModels.ReportViewModel
+
+@{
+    ViewData["Title"] = $"{Model.Vendor.VendorName} Report ";
+    Layout = "_Layout";
+
+    // Calculate completion percentage
+    int totalTasks = 4; // Total number of sections to be completed
+    int completedTasks = 0;
+
+    if (Model.NDAs.Any()) completedTasks++;
+    if (Model.Incidents.Any()) completedTasks++;
+    if (Model.Audits.Any()) completedTasks++;
+    if (Model.ChangeRequests.Any()) completedTasks++;
+
+  
+    int completionPercentage = totalTasks > 0 ? (completedTasks * 100) / totalTasks : 0;
+}
+
+<div class="container">
+    <h1 class="text-center">@ViewData["Title"]</h1>
+
+    <!-- Progress Bar -->
+    <div class="progress mb-4">
+        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: @completionPercentage%" aria-valuenow="@completionPercentage" aria-valuemin="0" aria-valuemax="100">
+            @completionPercentage%
+        </div>
+    </div>
+
+    <div class="vendor-details card">
+        <div class="card-body">
+            <h2 class="card-title"><i class="fas fa-building"></i> Vendor Details</h2>
+            <p><strong>Name:</strong> @Model.Vendor.VendorName</p>
+            <p><strong>Category:</strong> @Model.Vendor.VendorCategory</p>
+            <p><strong>ContractEndDate:</strong> @Model.Vendor.ContractEndDate</p>
+           
+        </div>
+    </div>
+
+    <div class="report-sections">
+        <section id="ndas" class="card">
+            <div class="card-body">
+                <h2 class="card-title"><i class="fas fa-file-alt"></i> NDAs</h2>
+                @if (Model.NDAs.Any())
+                {
+                    <ul>
+                        @foreach (var nda in Model.NDAs)
+                        {
+                            <li>
+                                <p><strong>File Name:</strong> @nda.FileName</p>
+                                <p><strong>Start Date:</strong> @nda.NDAStartDate.ToShortDateString()</p>
+                                <p><strong>End Date:</strong> @nda.NDAEndDate.ToShortDateString()</p>
+                                <a href="/NDA/Details/@nda.Id" class="btn btn-primary btn-sm" title="View details of this audit">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No NDAs found for this vendor.</p>
+                }
+            </div>
+        </section>
+
+        <section id="incidents" class="card">
+            <div class="card-body">
+                <h2 class="card-title"><i class="fas fa-exclamation-triangle"></i> Incidents</h2>
+                @if (Model.Incidents.Any())
+                {
+                    <ul>
+                        @foreach (var incident in Model.Incidents)
+                        {
+                            <li>
+                                <p><strong>Incident No:</strong> @incident.IncidentNo</p>
+                                <p><strong>Date:</strong> @incident.IncidentDate.ToShortDateString()</p>
+                                <p><strong>Status:</strong> @incident.Status</p>
+                                <a href="/Incident/Details/@incident.Id" class="btn btn-primary btn-sm" title="View details of this audit">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No incidents found for this vendor.</p>
+                }
+            </div>
+        </section>
+
+        <section id="audits" class="card">
+            <div class="card-body">
+                <h2 class="card-title"><i class="fas fa-search"></i> Audits</h2>
+                @if (Model.Audits.Any())
+                {
+                    <ul>
+                        @foreach (var audit in Model.Audits)
+                        {
+                            <li>
+                                <p><strong>Audit Date:</strong> @audit.FindingsDate.ToShortDateString()</p>
+                                <p><strong>Status:</strong> @audit.Status</p>
+                                <a href="/Audit/Details/@audit.Id" class="btn btn-primary btn-sm" title="View details of this audit">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No audits found for this vendor.</p>
+                }
+            </div>
+        </section>
+
+        <section id="change-requests" class="card">
+            <div class="card-body">
+                <h2 class="card-title"><i class="fas fa-sync-alt"></i> Change Requests</h2>
+                @if (Model.ChangeRequests.Any())
+                {
+                    <ul>
+                        @foreach (var changeRequest in Model.ChangeRequests)
+                        {
+                            <li>
+                                <p><strong>Request Date:</strong> @changeRequest.ScheduledDate.ToShortDateString()</p>
+                                <p><strong>Status:</strong> @changeRequest.Status</p>
+                                <a href="/ChangeRequests/Details/@changeRequest.Id" class="btn btn-primary btn-sm" title="View details of this audit">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No change requests found for this vendor.</p>
+                }
+            </div>
+        </section>
+    </div>
+
+    <a class="btn btn-secondary" href="@Url.Action("Index", "Report")">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<style>
+    .card {
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 15px;
+    }
+
+        .card-title i {
+            margin-right: 10px;
+        }
+
+    .report-sections ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .report-sections li {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+        .report-sections li:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.02);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+    .progress {
+        height: 30px;
+        margin-bottom: 20px;
+    }
+
+    .progress-bar {
+        line-height: 30px;
+        font-size: 18px;
+    }
+
+    .fas {
+        font-size: 14px;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* @model NBE_Project.Models.VendorReport
+
+@{
+    ViewData["Title"] = "Vendor Report";
+    Layout = "_Layout";
+
+    // Calculate completion percentage
+    int totalTasks = 5;
+    int completedTasks = 0;
+
+    if (Model.NDAStatus == NDAStatus.Approved) completedTasks++;
+    if (Model.SecurityAssuranceStatus == SecurityAssuranceStatus.Approved) completedTasks++;
+    if (Model.IncidentStatus == IncidentStatus.Closed) completedTasks++;
+    if (Model.AuditStatus == AuditStatus.Completed) completedTasks++;
+    if (Model.ChangeRequestStatus == ChangeRequestStatus.Approved) completedTasks++;
+
+    // Ensure no division by zero
+    int completionPercentage = totalTasks > 0 ? (completedTasks * 100) / totalTasks : 0;
+}
+
+<h1 class="text-center">@Model.VendorName</h1>
+
+<div class="report-container shadow-lg p-4 bg-white rounded">
+    <h2>Status Report</h2>
+
+    <!-- Progress Bar -->
+    <div class="progress mb-4">
+        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: @completionPercentage%" aria-valuenow="@completionPercentage" aria-valuemin="0" aria-valuemax="100">
+            @completionPercentage%
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Report Type</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>NDA Status</td>
+                <td>@Model.NDAStatus</td>
+            </tr>
+            <tr>
+                <td>Security Assurance Status</td>
+                <td>@Model.SecurityAssuranceStatus</td>
+            </tr>
+            <tr>
+                <td>Incident Status</td>
+                <td>@Model.IncidentStatus</td>
+            </tr>
+            <tr>
+                <td>Audit Status</td>
+                <td>@Model.AuditStatus</td>
+            </tr>
+            <tr>
+                <td>Change Request Status</td>
+                <td>@Model.ChangeRequestStatus</td>
+            </tr>
+            <tr>
+                <td>Completion Percentage</td>
+                <td>@completionPercentage %</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .report-container {
+        padding: 20px;
+        margin-top: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            padding: 0.75rem;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+            background-color: #343a40;
+            color: white;
+        }
+
+    .progress {
+        height: 30px;
+        margin-bottom: 20px;
+    }
+
+    .progress-bar {
+        line-height: 30px;
+        font-size: 18px;
+    }
+
+    .fas {
+        font-size: 14px;
+    }
+</style> *@

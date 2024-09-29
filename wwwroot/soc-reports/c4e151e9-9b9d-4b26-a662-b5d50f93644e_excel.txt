@@ -1,0 +1,21 @@
+ToTal sales     =SUM(J2:J2000)
+
+Total Profit      =SUM(M2:M2000)
+
+ No of Quentity    =COUNT(K2:K2000)
+
+ Max Profit=MAX(M2:M2000)
+
+TotalHighSale=SUMIF(O2:O2000,O3,J2:J2000)
+     Noofhighsale =COUNTIF(O2:O2000,O3)
+Avgnewsale=AVERAGE(P2:P2000)
+maxnewsale=MAX(P2:P2000)
+minnewsale=MIN(P2:P2000)
+secondhighsale=LARGE(J2:J2000,2)
+4lowsale=SMALL(J2:J2000,4)
+=AVERAGEIF(E2:E2000,"Texas",P2:P2000)
+=SUMIF(E2:E2000,"California",P2:P2000)
+Top3Avg=AVERAGE(LARGE((M2:M2000),3))
+
+
+

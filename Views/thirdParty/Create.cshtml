@@ -1,0 +1,192 @@
+﻿@model NBE_Project.Models.ThirdPartyDto
+
+@{
+    ViewBag.Title = "Profile";
+    Layout = "_Layout3";
+ 
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0"> Profile</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" id="vendorForm" class="needs-validation" novalidate>
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="VendorName" class="form-label">Full Name</label>
+                        <input id="VendorName" class="form-control grey-text-field" asp-for="VendorId" placeholder="Enter vendor name" required />
+                        <span asp-validation-for="VendorId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="Company" class="form-label">Company</label>
+                        <textarea id="Company" class="form-control grey-text-field" asp-for="Company" rows="3" placeholder="Enter company details" required></textarea>
+                        <span asp-validation-for="Company" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="ContactTitle" class="form-label">Title</label>
+                        <input id="ContactTitle" class="form-control grey-text-field" asp-for="ContactTitle" placeholder="Enter contact title" required />
+                        <span asp-validation-for="ContactTitle" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="ContractFile" class="form-label">Contract File</label>
+                        <input type="file" class="form-control grey-text-field" id="ContractFile" name="ContractFile" />
+                        <span asp-validation-for="ContractFile" class="text-danger"></span>
+                    </div>
+
+
+                
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="Email" class="form-label">Email</label>
+                        <input id="Email" class="form-control grey-text-field" asp-for="Email" placeholder="Enter email" type="email" required />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ContractStartDate" class="form-label">Contract Start Date</label>
+                        <input asp-for="ContractStartDate" type="date" class="form-control grey-text-field" required />
+                        <span asp-validation-for="ContractStartDate" class="text-danger"></span>
+                    </div>
+
+
+                 
+                </div>
+
+                <div class="row mb-3">
+
+                    <div class="col-md-6">
+                        <label for="ContactNumber" class="form-label">Contact Number</label>
+                        <input id="ContactNumber" class="form-control grey-text-field" asp-for="ContactNumber" placeholder="Enter contact number" required />
+                        <span asp-validation-for="ContactNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ContractEndDate" class="form-label">Contract End Date</label>
+                        <input asp-for="ContractEndDate" type="date" class="form-control grey-text-field" required />
+                        <span asp-validation-for="ContractEndDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Submit and Cancel Buttons -->
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-custom-green btn-lg mx-2">Submit</button>
+                            <a asp-controller="VendorHome" asp-action="Index" class="btn btn-secondary btn-lg mx-2">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Include SweetAlert2 for custom confirmation dialogs -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('vendorForm');
+        const submitButton = document.querySelector('button[type="submit"]');
+
+        // Retrieve and populate form data from local storage when the page loads
+        const savedData = localStorage.getItem('vendorFormData');
+        if (savedData) {
+            const formData = JSON.parse(savedData);
+            Object.keys(formData).forEach(key => {
+                const input = document.getElementById(key);
+                if (input) {
+                    input.value = formData[key];
+                }
+            });
+        }
+
+        // Save form data to local storage when the input changes
+        form.addEventListener('input', function () {
+            const formData = {};
+            new FormData(form).forEach((value, key) => {
+                formData[key] = value;
+            });
+            localStorage.setItem('vendorFormData', JSON.stringify(formData));
+        });
+
+        // Form submit with SweetAlert2 confirmation
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to submit this Form?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, submit it!',
+                cancelButtonText: 'No, cancel!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Disable the submit button to prevent multiple submissions
+                    submitButton.disabled = true;
+
+                    // No need to remove localStorage data, as we want it to persist until manually changed
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Custom styling for better visual presentation -->
+<style>
+    .grey-text-field {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+
+    .grey-text-field:focus {
+        border-color: #28a745;
+        box-shadow: none;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .btn-secondary:hover {
+        background-color: #6c757d;
+    }
+
+    .btn {
+        width: 150px;
+    }
+
+    .card {
+        border-radius: 15px;
+    }
+
+    .card-header {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .needs-validation .form-control:invalid {
+        border-color: #dc3545;
+    }
+
+    .needs-validation .form-control:valid {
+        border-color: #28a745;
+    }
+</style>

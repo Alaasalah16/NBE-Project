@@ -1,0 +1,128 @@
+﻿@model NBE_Project.ViewModels.AwarenessVM
+
+@{
+    ViewBag.Title = "Awareness Messages";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-light">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Awareness Messages and Tips</h2>
+        </div>
+        <div class="card-body">
+            <!-- Form to input Vendor ID -->
+            <form asp-action="VendorIndex" method="get" class="mb-4">
+                <div class="form-group">
+                    <label for="vendorId" class="control-label">Enter your ID:</label>
+                    <input type="number" name="vendorId" id="vendorId" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Load NBE Messages</button>
+            </form>
+
+            <!-- Card for displaying recent awareness message -->
+            <div class="col">
+                <div class="card border-success shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="d-flex justify-content-center align-items-center mb-3">
+                            <i id="bellIcon" class="fas fa-bell fa-4x" style="color: gold;"></i>
+                        </div>
+                        <div class="col">
+                            <h4 class="alert-heading mb-2">
+                                Total Messages
+                            </h4>
+                            <p class="card-text mb-0" id="totalMessages">@Model.AwarenessMessages.Count()</p>
+                            <!-- Display the most recent awareness message -->
+                         @*    <div>
+                                <p>@Model.RecentAwareness?.Message</p>
+                                @if (!string.IsNullOrEmpty(Model.RecentAwareness?.FileName))
+                                {
+                                    <a href="@Url.Action("DownloadFile", new { id = Model.RecentAwareness.Id })" class="btn btn-info btn-sm">
+                                        Download File
+                                    </a>
+                                }
+                            </div> *@
+                            <!-- Link to view more messages -->
+                            <a href="@Url.Action("RecentMessage", "Awareness", new { vendorId = ViewBag.VendorId })" class="btn btn-custom-green mt-3">
+                                View Recent Message
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table for listing awareness messages -->
+            <div class="table-responsive mt-4">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Message</th>
+                            <th>File Name</th>
+                            <th>Download</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var message in Model.AwarenessMessages)
+                        {
+                            <tr>
+                                <td>@message.Message</td>
+                                <td>@message.FileName</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(message.FileName))
+                                    {
+                                        <a href="@Url.Content($"~/files/{message.FileName}")" download class="btn btn-success btn-sm">
+                                            <i class="fas fa-file-download"></i> Download
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No file</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- JavaScript for animations -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<script>
+    // Animate the bell icon with anime.js
+    anime({
+        targets: '#bellIcon',
+        keyframes: [
+            { translateX: -10, duration: 100 },
+            { translateX: 10, duration: 100 },
+            { translateX: -10, duration: 100 },
+            { translateX: 10, duration: 100 },
+            { translateX: 0, duration: 100 }
+        ],
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: 1000 // Delay before the animation starts
+    });
+
+    // Animate total messages count
+    anime({
+        targets: '#totalMessages',
+        scale: [1, 1.2, 1],
+        duration: 1000,
+        easing: 'easeInOutSine',
+        loop: true
+    });
+</script>
+<style>
+
+
+    .btn-primary:hover {
+        background-color: gold; /* Change to your desired hover color */
+        border-color: darkgoldenrod; /* Optional: Change border color on hover */
+    }
+</style>

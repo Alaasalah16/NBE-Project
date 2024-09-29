@@ -1,0 +1,193 @@
+﻿@model IEnumerable<NBE_Project.Models.ThirdParty>
+
+@{
+    ViewData["Title"] = "Reporting";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search by Vendor Name..." onkeyup="filterCards()" />
+        <button id="clearSearch" onclick="clearSearch()">Clear</button>
+    </div>
+
+    <div class="card-container" id="thirdPartyContainer">
+        @if (!Model.Any())
+        {
+            <div class="card no-results">
+                <p>No third parties found.</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var thirdParty in Model)
+            {
+                <div class="card">
+                    <div class="card-header ">
+                        <h3>@thirdParty.VendorName</h3>
+                    </div>
+                    <div class="card-body">
+                        <a class="btn btn-gradient-primary" href="@Url.Action("VendorReport", new { thirdPartyId = thirdParty.Id })">
+                            <i class="fas fa-eye"></i> View Report
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <a class="btn btn-secondary" href="@Url.Action("Index", "Dashboard")">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<style>
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        color: #2c3e50; /* Darker shade of gray for a sophisticated look */
+        font-family: 'Arial', sans-serif; /* Modern and clean font family */
+        font-size: 2.5rem; /* Slightly larger font size for emphasis */
+        font-weight: 600; /* Slightly bolder weight for better readability */
+        margin-bottom: 25px; /* Increased margin for more breathing space */
+        text-align: center; /* Center-align text */
+        line-height: 1.3; /* Improved line height for better readability */
+      /*   text-transform: capitalize; /* Capitalize each word for a polished look */ */
+        letter-spacing: 1px; /* Slight letter spacing for improved clarity */
+    }
+
+
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .card {
+        background: #ffffff; /* White */
+        border: 2px solid grey;
+       /*  border: 1px solid #e0e0e0; */
+        border-radius: 12px;
+        overflow: hidden;
+        width: 300px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        transform: perspective(1px) translateZ(0);
+    }
+
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-4px) scale(1.02);
+        }
+
+    .card-header {
+       /*  border: 2px solid grey; */
+        color: black;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .card-body {
+        padding: 16px;
+        display: flex;
+        justify-content: center;
+    }
+
+        .card-body a.btn-report {
+            text-decoration: none;
+            color: white;
+            background: #007bff; /* Blue color */
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+            .card-body a.btn-report i {
+                margin-right: 8px;
+            }
+
+            .card-body a.btn-report:hover {
+                background: #0056b3; /* Darker Blue */
+            }
+
+    .no-results {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        font-style: italic;
+        color: #888;
+    }
+
+    .search-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        align-items: center;
+    }
+
+        .search-container input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-right: 10px; /* Space between input and button */
+            transition: border-color 0.3s ease;
+        }
+
+            .search-container input[type="text"]:focus {
+                border-color: #007bff; /* Change border color to match gradient */
+                outline: none;
+            }
+
+        .search-container button {
+            padding: 12px 20px;
+            border: none;
+            background: #f52727; /* Red color */
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+            .search-container button:hover {
+                background: #cc0000; /* Darker Red */
+            }
+
+ 
+</style>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+    function filterCards() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const container = document.getElementById('thirdPartyContainer');
+        const cards = container.getElementsByClassName('card');
+
+        for (let i = 0; i < cards.length; i++) {
+            const title = cards[i].getElementsByTagName('h3')[0].textContent.toLowerCase();
+            cards[i].style.display = title.includes(input) ? '' : 'none';
+        }
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        filterCards();
+    }
+</script>

@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Vender>
+@{
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Upload Excel File</h2>
+        </div>
+        <div class="card-body p-4">
+            <form asp-controller="ExcelFile" asp-action="Index" method="post" enctype="multipart/form-data" id="fileUploadForm">
+                <div class="form-group mb-3">
+                    <input type="file" name="file" class="form-control" id="fileInput" />
+                </div>
+
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary w-100 w-sm-auto mx-2" id="uploadBtn">Upload</button>
+                            <a class="btn btn-outline-primary w-100 w-sm-auto mx-2" asp-controller="ThirdParty" asp-action="Index" role="button">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            @if (Model.Count() > 0)
+            {
+                <hr />
+                <table class="table table-bordered table-striped table-hover dataTable">
+                    <thead>
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Code</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Vender vendor in Model)
+                        {
+                            <tr>
+                                <td>@vendor.Name</td>
+                                <td>@vendor.Code</td>
+                                <td>@vendor.IncidentType</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        document.getElementById('fileUploadForm').onsubmit = function (e) {
+            var fileInput = document.getElementById('fileInput');
+            if (!fileInput.value) {
+                e.preventDefault();
+                swal.fire('Error', 'Please select a file to upload', 'error');
+            }
+        }
+
+        // Trigger alert after successful upload (can be enhanced with AJAX to ensure success)
+        function displayAlert() {
+            swal.fire('Excellent', 'You uploaded the file successfully', 'success');
+        }
+    </script>
+}

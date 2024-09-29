@@ -1,0 +1,48 @@
+﻿@model NBE_Project.ViewModels.AwarenessVM
+
+@{
+    ViewBag.Title = "Recent Awareness Message";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-light">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 class="mb-0">Recent Awareness Message</h2>
+        </div>
+        <div class="card-body">
+            @if (Model.RecentAwareness != null)
+            {
+                <div class="alert alert-info">
+                    <h4 class="alert-heading">Message</h4>
+                    <p>@Model.RecentAwareness.Message</p>
+
+                  @*   <p>
+                        @Model.RecentAwareness.FileName
+                    </p> *@
+                      
+                        
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No recent messages available.</p>
+            }
+
+            <a href="@Url.Action("VendorIndex", new { vendorId = ViewBag.VendorId })" class="btn btn-primary mt-3">
+                Back to Messages List
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    
+
+    .btn-primary:hover {
+        background-color: gold; /* Change to your desired hover color */
+        border-color: darkgoldenrod; /* Optional: Change border color on hover */
+    }
+</style>
