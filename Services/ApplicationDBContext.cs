@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NBE_Project.Models;
-using NBE_Project.ViewModels;
-using NBE_Project.Models;
-using Windows.UI.Notifications;
 
 namespace NBE_Project.Services
 {
