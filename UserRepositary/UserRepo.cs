@@ -1,14 +1,8 @@
 ﻿//using NBE_Project.GuestRepositary;
 using NBE_Project.Models;
 using NBE_Project.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using NBE_Project.ViewModels;
 using NBE_Project.Services;
 namespace NBE_Project.UserRepositary
 {

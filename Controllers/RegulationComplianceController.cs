@@ -267,7 +267,22 @@ namespace NBE_Project.Controllers
 
             if (recentCompliance == null)
             {
-                return NotFound(); // Handle no message found
+                // If no compliance is found, return a custom view or a message
+                // Option 1: Return an empty view model with a message
+                var emptyViewModel = new RegulationComplianceVM
+                {
+                    ThirdPartyId = thirdPartyId,
+                    RegulationName = "No recent regulation compliance available.",
+                    ComplianceDate = DateTime.Now, // Or leave it null
+                    Comments = "No compliance data available.",
+                    Clauses = new List<ClauseVM>()
+                };
+
+                return View(emptyViewModel);
+
+                // Option 2: Return an error view
+                // ViewBag.ErrorMessage = "No recent regulation compliance available.";
+                // return View("Error");
             }
 
             var viewModel = new RegulationComplianceVM
@@ -277,18 +292,19 @@ namespace NBE_Project.Controllers
                 RegulationName = recentCompliance.RegulationName,
                 ComplianceDate = recentCompliance.ComplianceDate,
                 Comments = recentCompliance.Comments,
-                Clauses = recentCompliance.Clauses.Select(c => new ClauseVM
+                Clauses = recentCompliance.Clauses?.Select(c => new ClauseVM
                 {
                     Id = c.Id,
                     ClauseName = c.ClauseName,
                     Requirements = c.Requirements,
                     CompilationStatus = c.CompilationStatus,
                     Comments = c.Comments
-                }).ToList()
+                }).ToList() ?? new List<ClauseVM>() // Handle null clauses
             };
 
             return View(viewModel);
         }
+
 
         // List all compliance messages for a third party
         public IActionResult VendorIndex(int thirdPartyId)
